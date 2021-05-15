@@ -21,6 +21,8 @@ composer packages.
 
 For an alternative approach, checkout [DarkGhostHunter/Preloader](https://github.com/DarkGhostHunter/Preloader).
 
+For an OPCache UI, checkout [rlerdorf/opcache-status](https://github.com/rlerdorf/opcache-status).
+
 ## Installation
 
 You can install this plugin into your CakePHP application using [composer](https://getcomposer.org).
