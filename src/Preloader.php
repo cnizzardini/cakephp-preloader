@@ -22,7 +22,7 @@ class Preloader
      *
      * @var \CakePreloader\PreloadResource[]
      */
-    private $_preloadResources = [];
+    private $preloadResources = [];
 
     /**
      * Returns an array of PreloadResource after sorting alphabetically
@@ -31,11 +31,11 @@ class Preloader
      */
     public function getPreloadResources(): array
     {
-        uasort($this->_preloadResources, function (PreloadResource $a, PreloadResource $b) {
+        uasort($this->preloadResources, function (PreloadResource $a, PreloadResource $b) {
             return strcasecmp($a->getFile(), $b->getFile());
         });
 
-        return $this->_preloadResources;
+        return $this->preloadResources;
     }
 
     /**
@@ -65,11 +65,11 @@ class Preloader
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
             if (Inflector::camelize($file->getFilename()) === $file->getFilename()) {
-                $this->_preloadResources[] = new PreloadResource('require_once', $file->getPathname());
+                $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
                 continue;
             }
 
-            $this->_preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
+            $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
         }
 
         return $this;
