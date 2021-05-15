@@ -21,7 +21,7 @@ composer packages.
 
 For an alternative approach, checkout [DarkGhostHunter/Preloader](https://github.com/DarkGhostHunter/Preloader).
 
-For an OPCache UI, checkout [rlerdorf/opcache-status](https://github.com/rlerdorf/opcache-status).
+For an OPCache UI, checkout [amnuts/opcache-gui](https://github.com/amnuts/opcache-gui).
 
 ## Installation
 
