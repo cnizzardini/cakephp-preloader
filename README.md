@@ -148,6 +148,16 @@ I ran each 3 times:
 | `CAKE` only | 447.92 [#/sec] (mean) |  448.48 [#/sec] (mean) | 446.53 [#/sec] (mean) |
 | `CAKE` + `APP` | 457.62 [#/sec] (mean) |  455.40 [#/sec] (mean) | 394.89 [#/sec] (mean) |
 
-## Tests
+## Tests / Analysis
 
-todo
+Test Suite:
+
+```console
+composer test
+```
+
+Test Suite + Static Analysis:
+
+```console
+composer check
+```
