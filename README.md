@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-preloader/badge.svg?branch=main)](https://coveralls.io/github/cnizzardini/cakephp-preloader?branch=main)
 [![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
 [![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.0-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?logo=php)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?logo=php)](https://php.net/)
 
 An OPCache preloader for CakePHP.
 
@@ -56,40 +56,42 @@ Options:
 
 --app           Add your applications src directory into the preloader
 --help, -h      Display this help.
---name          The preload file path. (default:
-                /srv/app/preload.php)
---packages      A comma separated list of packages (e.g.
-                vendor-name/package-name) to add to the preloader
---plugins       A comma separated list of your plugins to load or `*` to
-                load all plugins/*
+--name          The preload file path. (default: ROOT . DS . 'preload.php')
+--packages      A comma separated list of packages (e.g. vendor-name/package-name) to add to the preloader
+--plugins       A comma separated list of your plugins to load or `*` to load all plugins/*
 --quiet, -q     Enable quiet output.
 --verbose, -v   Enable verbose output.
 
 ```
 
-Examples:
+### Examples:
 
-Default only loads in CakePHP core files excluding TestSuite, Console, Command, and Shell namespaces:
+Default loads in CakePHP core files excluding TestSuite, Console, Command, and Shell namespaces. Preload file is
+written to `ROOT . DS . 'preload.php'`:
+
 ```console
 bin/cake preloader
 ```
 
-Include composer packages:
+Include a list of composer packages:
+
 ```console
 bin/cake preloader --packages=cakephp/authentication,cakephp/chronos
 ```
 
-Include userland application:
+Include your `APP` code:
+
 ```console
 bin/cake preloader --app
 ```
 
-Include userland plugins:
+Include all your projects plugins:
+
 ```console
 bin/cake preloader --plugins=*
 ```
 
-or
+Include a list of your projects plugins:
 
 ```console
 bin/cake preloader --plugins=MyPlugin,MyOtherPlugin
@@ -97,7 +99,7 @@ bin/cake preloader --plugins=MyPlugin,MyOtherPlugin
 
 ### Preloader Class
 
-You can build something more elaborate using `Preloader::loadPath()` and `Preloader::write()`. Preloader uses
+You can customize your OPCache Preloader using the same class used by the console command. Preloader uses
 CakePHP's FileSystem class under the hood.
 
 ```php
