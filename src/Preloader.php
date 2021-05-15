@@ -22,7 +22,7 @@ class Preloader
      *
      * @var \CakePreloader\PreloadResource[]
      */
-    private $preloadResources = [];
+    private array $preloadResources = [];
 
     /**
      * Returns an array of PreloadResource after sorting alphabetically

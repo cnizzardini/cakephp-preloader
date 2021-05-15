@@ -30,14 +30,14 @@ class PreloadResource
      *
      * @var string
      */
-    private $type;
+    private string $type;
 
     /**
      * The absolute file path to be preloaded
      *
      * @var string
      */
-    private $file;
+    private string $file;
 
     /**
      * @param string $type The preload resource type, see PreloadResource::TYPES
