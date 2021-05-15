@@ -4,6 +4,7 @@ namespace CakePreloader\Test\TestCase\Command;
 
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use RuntimeException;
 
 class PreloaderCommandTest extends TestCase
 {
@@ -102,5 +103,11 @@ class PreloaderCommandTest extends TestCase
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('vendorone/packageone/src/VendorOnePackageOneTestClassZz.php', $preload);
         $this->assertStringContainsString('vendortwo/packagetwo/src/VendorTwoPackageTwoTestClassZz.php', $preload);
+    }
+
+    public function test_invalid_file()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->exec('preloader --name="/etc/passwd"');
     }
 }
