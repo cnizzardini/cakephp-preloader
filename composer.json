@@ -1,0 +1,44 @@
+{
+    "name": "cnizzardini/cakephp-preloader",
+    "description": "OPCache Preloader plugin for CakePHP",
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2",
+        "cakephp/cakephp": "~4.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5 || ^9.3",
+        "cakephp/cakephp-codesniffer": "^4.4",
+        "phpmd/phpmd": "^2.10",
+        "php-coveralls/php-coveralls": "^2.4",
+        "phpstan/phpstan": "^0.12.32"
+    },
+    "autoload": {
+        "psr-4": {
+            "CakePreloader\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CakePreloader\\Test\\": "tests/",
+            "CakePreloader\\Test\\App\\": "tests/test_app/src/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@test",
+            "@phpcs",
+            "@phpstan",
+            "@phpmd"
+        ],
+        "phpcs": "phpcs --colors -p  src/",
+        "phpcbf": "phpcbf --colors -p src/",
+        "phpstan": "phpstan analyse",
+        "test": "phpunit --colors=always",
+        "phpmd": "phpmd src/ ansi phpmd.xml"
+    },
+    "support": {
+        "source": "https://github.com/cnizzardini/cakephp-preloader"
+    }
+}
