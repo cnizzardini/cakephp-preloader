@@ -1,9 +1,3 @@
-# Project specific files #
-##########################
-tests/test_app/preload.php
-tests/test_app/a-unique-name.php
-
-
 # CakePHP specific files #
 ##########################
 /config/app_local.php
@@ -47,3 +41,9 @@ nbproject/*
 .vscode
 # Sass preprocessor
 .sass-cache/
+
+# Project specific files #
+##########################
+tests/test_app/preload.php
+tests/test_app/a-unique-name.php
+/composer.lock
