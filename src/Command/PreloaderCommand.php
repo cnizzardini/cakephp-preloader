@@ -22,7 +22,7 @@ class PreloaderCommand extends Command
     /**
      * @var \CakePreloader\Preloader
      */
-    private $preloader;
+    private Preloader $preloader;
 
     /**
      * PreloaderCommand constructor.
