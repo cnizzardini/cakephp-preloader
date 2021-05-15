@@ -35,6 +35,7 @@ class Plugin extends BasePlugin
     /**
      * @param \Cake\Routing\RouteBuilder $routes An instance of RouteBuilder
      * @return void
+     * @codeCoverageIgnore
      */
     public function routes(RouteBuilder $routes): void
     {
@@ -43,6 +44,7 @@ class Plugin extends BasePlugin
     /**
      * @param \Cake\Http\MiddlewareQueue $middleware An instance of MiddlewareQueue
      * @return \Cake\Http\MiddlewareQueue
+     * @codeCoverageIgnore
      */
     public function middleware(MiddlewareQueue $middleware): MiddlewareQueue
     {
