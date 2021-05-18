@@ -3,6 +3,7 @@
     "description": "OPCache Preloader plugin for CakePHP",
     "type": "cakephp-plugin",
     "license": "MIT",
+    "keywords": ["cakephp","preload","preloader","opcache preloader","cakephp preloader", "cakephp opcache preloader"],
     "require": {
         "php": ">=7.4",
         "cakephp/cakephp": "~4.2.0"
@@ -39,6 +40,13 @@
         "phpmd": "phpmd src/ ansi phpmd.xml"
     },
     "support": {
+        "issues": "https://github.com/cnizzardini/cakephp-preloader/issues",
         "source": "https://github.com/cnizzardini/cakephp-preloader"
-    }
+    },
+    "authors": [
+        {
+            "name": "Chris Nizzardini",
+            "role": "Developer"
+        }
+    ]
 }
