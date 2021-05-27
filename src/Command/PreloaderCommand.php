@@ -139,7 +139,7 @@ class PreloaderCommand extends Command
             }
         }
 
-        $ignorePaths = ['src\/Console', 'src\/Command'];
+        $ignorePaths = ['src\/Console', 'src\/Command', 'src\/Mailer\/Preview'];
         if (!$args->getOption('phpunit')) {
             $ignorePaths[] = 'tests\/';
         }
