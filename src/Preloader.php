@@ -43,7 +43,7 @@ class Preloader
     /**
      * Sets preloadResources
      *
-     * @param \CakePreloader\PreloadResource[] the array of PreloadResource instances
+     * @param \CakePreloader\PreloadResource[] $preloadResources the array of PreloadResource instances
      * @return $this
      */
     public function setPreloadResources(array $preloadResources)
