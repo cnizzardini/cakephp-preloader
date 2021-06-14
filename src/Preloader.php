@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace CakePreloader;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Filesystem\Filesystem;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Inflector;
@@ -36,6 +38,19 @@ class Preloader
         });
 
         return $this->preloadResources;
+    }
+
+    /**
+     * Sets preloadResources
+     *
+     * @param \CakePreloader\PreloadResource[] the array of PreloadResource instances
+     * @return $this
+     */
+    public function setPreloadResources(array $preloadResources)
+    {
+        $this->preloadResources = $preloadResources;
+
+        return $this;
     }
 
     /**
@@ -91,6 +106,8 @@ class Preloader
         if ((file_exists($path) && !is_writable($path))) {
             throw new RuntimeException('File path is not writable: ' . $path);
         }
+
+        EventManager::instance()->dispatch(new Event('CakePreloader.beforeWrite', $this));
 
         return (bool)file_put_contents($path, $this->contents());
     }
