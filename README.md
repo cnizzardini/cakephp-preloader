@@ -112,6 +112,8 @@ your preloader file is written.
 });
 ```
 
+For more on events, read the CakePHP [Events System](https://book.cakephp.org/4/en/core-libraries/events.html#registering-listeners) documentation.
+
 ### Preloader Class
 
 You can customize your OPCache Preloader using the same class used by the console command. Preloader uses
