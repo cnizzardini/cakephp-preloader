@@ -97,6 +97,21 @@ Include a list of your projects plugins:
 bin/cake preloader --plugins=MyPlugin,MyOtherPlugin
 ```
 
+### Before Write Event
+
+You can extend functionality by listening for the `CakePreloader.beforeWrite` event. This is dispatched just before
+your preloader file is written.
+
+```php
+(\Cake\Event\EventManager::instance())->on('CakePreloader.beforeWrite', function(Event $event){
+    /** @var Preloader $preloader */
+    $preloader = $event->getSubject();
+    $resources = $preloader->getPreloadResources();
+    // modify resources or whatever...
+    $preloader->setPreloadResources($resources);
+});
+```
+
 ### Preloader Class
 
 You can customize your OPCache Preloader using the same class used by the console command. Preloader uses

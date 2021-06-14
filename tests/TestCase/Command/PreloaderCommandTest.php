@@ -2,8 +2,13 @@
 
 namespace CakePreloader\Test\TestCase\Command;
 
+use Cake\Event\Event;
+use Cake\Event\EventList;
+use Cake\Event\EventManager;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use CakePreloader\Preloader;
+use CakePreloader\PreloadResource;
 use RuntimeException;
 
 class PreloaderCommandTest extends TestCase
@@ -109,5 +114,25 @@ class PreloaderCommandTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->exec('preloader --name="/etc/passwd"');
+    }
+
+    public function test_before_write_event()
+    {
+        $eventManager = EventManager::instance()->setEventList(new EventList());
+
+        $eventManager->on('CakePreloader.beforeWrite', function(Event $event){
+            /** @var Preloader $preloader */
+            $preloader = $event->getSubject();
+            $this->assertInstanceOf(Preloader::class, $preloader);
+            $preloader->setPreloadResources([
+                (new PreloadResource('require_once', __FILE__))
+            ]);
+        });
+
+        $this->exec('preloader');
+        $this->assertEventFired('CakePreloader.beforeWrite');
+
+        $preload = file_get_contents(ROOT . DS . 'preload.php');
+        $this->assertStringContainsString(__FILE__, $preload);
     }
 }
