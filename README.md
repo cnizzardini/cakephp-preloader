@@ -134,7 +134,7 @@ $preloader->write('/optional/path/to/preloader-file.php');
 
 ## Performance:
 
-Obviously, these types of benchmarks should be taken with a bit of a gain of salt. I benchmarked this using apache bench with this project here: https://github.com/mixerapi/app which is a dockerized REST API (LEMP stack on alpine + php-fpm 7.4). `DEBUG` was set to false.
+Obviously, these types of benchmarks should be taken with a bit of a gain of salt. I benchmarked this using apache bench with this project here: https://github.com/mixerapi/demo which is a dockerized REST API (LEMP stack on alpine + php-fpm 7.4). `DEBUG` was set to false.
 
 ```ini
 [php]
