@@ -64,8 +64,8 @@ Options:
 ```
 
 You may also load configurations from a `config/preloader_config.php` file. Please note, **command line arguments take
-precedence**. See [assets/preloader_config.php](assets/preloader_config.php) for a sample configuration file. If prefer
-handling configurations another way read the CakePHP documentation on
+precedence**. See [assets/preloader_config.php](assets/preloader_config.php) for a sample configuration file. If you 
+prefer handling configurations another way read the CakePHP documentation on
 [loading configuration files](https://book.cakephp.org/4/en/development/configuration.html#loading-configuration-files).
 
 ### Examples:
