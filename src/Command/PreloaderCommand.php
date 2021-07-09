@@ -50,7 +50,7 @@ class PreloaderCommand extends Command
         $this->app($args);
         $this->plugins($args);
 
-        $io->out('PreloaderConfig: ' . Configure::check('PreloaderConfig') ? 'present' : 'not found');
+        $io->info('Preloader Config: ' . (Configure::check('PreloaderConfig') ? 'present' : 'not found'));
 
         $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
         $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
