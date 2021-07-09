@@ -43,10 +43,14 @@ class PreloaderCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
+        $io->out('Generating preloader...');
+
         $this->cakephp();
         $this->packages($args);
         $this->app($args);
         $this->plugins($args);
+
+        $io->out('PreloaderConfig: ' . Configure::check('PreloaderConfig') ? 'present' : 'not found');
 
         $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
         $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
