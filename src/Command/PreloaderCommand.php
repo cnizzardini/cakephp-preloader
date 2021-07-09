@@ -43,7 +43,9 @@ class PreloaderCommand extends Command
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
+        $io->hr();
         $io->out('Generating preloader...');
+        $io->hr();
 
         $this->cakephp();
         $this->packages($args);
