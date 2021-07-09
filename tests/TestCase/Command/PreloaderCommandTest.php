@@ -2,6 +2,7 @@
 
 namespace CakePreloader\Test\TestCase\Command;
 
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
@@ -26,9 +27,10 @@ class PreloaderCommandTest extends TestCase
     {
         parent::tearDown();
         @unlink(ROOT . DS . 'preload.php');
+        @unlink(ROOT . DS . 'a-unique-name.php');
     }
 
-    public function test_default()
+    public function test_default(): void
     {
         $this->exec('preloader');
         $this->assertExitSuccess();
@@ -49,33 +51,31 @@ class PreloaderCommandTest extends TestCase
         }
     }
 
-    public function test_with_name()
+    public function test_with_name(): void
     {
-        $name = ROOT . DS . 'a-unique-name.php';
+        $path = ROOT . DS . 'a-unique-name.php';
 
-        $this->exec('preloader --name="' . $name . '"');
+        $this->exec('preloader --name="' . $path . '"');
         $this->assertExitSuccess();
-        $this->assertFileExists($name);
-        @unlink(ROOT . DS . 'a-unique-name.php');
+        $this->assertFileExists($path);
     }
 
-    public function test_with_app()
+    public function test_with_app(): void
     {
         $this->exec('preloader --app --phpunit');
         $this->assertExitSuccess();
-
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('test_app/src/Application.php', $preload);
     }
 
-    public function test_with_one_plugin()
+    public function test_with_one_plugin(): void
     {
         $this->exec('preloader --plugins=MyPluginOneZz --phpunit');
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('plugins/MyPluginOneZz/src/Plugin.php', $preload);
     }
 
-    public function test_with_multiple_plugins()
+    public function test_with_multiple_plugins(): void
     {
         $this->exec('preloader --plugins=MyPluginOneZz,MyPluginTwoZz --phpunit');
         $preload = file_get_contents(ROOT . DS . 'preload.php');
@@ -83,7 +83,7 @@ class PreloaderCommandTest extends TestCase
         $this->assertStringContainsString('plugins/MyPluginTwoZz/src/Plugin.php', $preload);
     }
 
-    public function test_with_plugins_wildcard()
+    public function test_with_plugins_wildcard(): void
     {
         $this->exec('preloader --plugins=* --phpunit');
         $preload = file_get_contents(ROOT . DS . 'preload.php');
@@ -91,7 +91,7 @@ class PreloaderCommandTest extends TestCase
         $this->assertStringContainsString('plugins/MyPluginTwoZz/src/Plugin.php', $preload);
     }
 
-    public function test_with_one_package()
+    public function test_with_one_package(): void
     {
         $this->exec('preloader --packages=vendorone/packageone --phpunit');
         $this->assertExitSuccess();
@@ -100,7 +100,7 @@ class PreloaderCommandTest extends TestCase
         $this->assertStringContainsString('vendorone/packageone/src/VendorOnePackageOneTestClassZz.php', $preload);
     }
 
-    public function test_with_multiple_packages()
+    public function test_with_multiple_packages(): void
     {
         $this->exec('preloader --packages=vendorone/packageone,vendortwo/packagetwo --phpunit');
         $this->assertExitSuccess();
@@ -110,13 +110,13 @@ class PreloaderCommandTest extends TestCase
         $this->assertStringContainsString('vendortwo/packagetwo/src/VendorTwoPackageTwoTestClassZz.php', $preload);
     }
 
-    public function test_invalid_file()
+    public function test_invalid_file(): void
     {
         $this->expectException(RuntimeException::class);
         $this->exec('preloader --name="/etc/passwd"');
     }
 
-    public function test_before_write_event()
+    public function test_before_write_event(): void
     {
         $eventManager = EventManager::instance()->setEventList(new EventList());
 
@@ -134,5 +134,29 @@ class PreloaderCommandTest extends TestCase
 
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString(__FILE__, $preload);
+    }
+
+    public function test_with_config(): void
+    {
+        Configure::load('preloader_config_test', 'default');
+
+        $path = ROOT . DS . 'a-unique-name.php';
+
+        $this->exec('preloader --phpunit');
+        $this->assertExitSuccess();
+        $this->assertFileExists($path);
+
+        $preload = file_get_contents($path);
+
+        // app
+        $this->assertStringContainsString('test_app/src/Application.php', $preload);
+
+        // plugins
+        $this->assertStringContainsString('plugins/MyPluginOneZz/src/Plugin.php', $preload);
+        $this->assertStringContainsString('plugins/MyPluginTwoZz/src/Plugin.php', $preload);
+
+        // packages
+        $this->assertStringContainsString('vendorone/packageone/src/VendorOnePackageOneTestClassZz.php', $preload);
+        $this->assertStringContainsString('vendortwo/packagetwo/src/VendorTwoPackageTwoTestClassZz.php', $preload);
     }
 }

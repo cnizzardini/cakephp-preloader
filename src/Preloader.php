@@ -69,11 +69,7 @@ class Preloader
                     return false;
                 }
 
-                if (is_callable($callback)) {
-                    return $callback($file);
-                }
-
-                return true;
+                return is_callable($callback) ? $callback($file) : true;
             }
         );
 
@@ -99,10 +95,6 @@ class Preloader
      */
     public function write(string $path = ROOT . DS . 'preload.php'): bool
     {
-        if (!function_exists('opcache_get_status')) {
-            throw new RuntimeException('OPcache must be enabled');
-        }
-
         if ((file_exists($path) && !is_writable($path))) {
             throw new RuntimeException('File path is not writable: ' . $path);
         }

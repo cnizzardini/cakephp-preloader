@@ -5,9 +5,10 @@ namespace CakePreloader;
 
 use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
-use Cake\Http\MiddlewareQueue;
-use Cake\Routing\RouteBuilder;
+use Cake\Core\Configure;
+use Cake\Core\PluginApplicationInterface;
 use CakePreloader\Command\PreloaderCommand;
+use RuntimeException;
 
 /**
  * Plugin for Preloader
@@ -22,6 +23,27 @@ class Plugin extends BasePlugin
     protected $name = 'CakePreloader';
 
     /**
+     * @var bool
+     */
+    protected $routes = false;
+
+    /**
+     * @var bool
+     */
+    protected $middleware = false;
+
+    /**
+     * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
+     * @return void
+     */
+    public function bootstrap(PluginApplicationInterface $app): void
+    {
+        if (file_exists(CONFIG . 'preloader_config.php')) {
+            Configure::load('preloader_config', 'default');
+        }
+    }
+
+    /**
      * @param \Cake\Console\CommandCollection $commands CommandCollection
      * @return \Cake\Console\CommandCollection
      */
@@ -30,24 +52,5 @@ class Plugin extends BasePlugin
         $commands->add('preloader', PreloaderCommand::class);
 
         return $commands;
-    }
-
-    /**
-     * @param \Cake\Routing\RouteBuilder $routes An instance of RouteBuilder
-     * @return void
-     * @codeCoverageIgnore
-     */
-    public function routes(RouteBuilder $routes): void
-    {
-    }
-
-    /**
-     * @param \Cake\Http\MiddlewareQueue $middleware An instance of MiddlewareQueue
-     * @return \Cake\Http\MiddlewareQueue
-     * @codeCoverageIgnore
-     */
-    public function middleware(MiddlewareQueue $middleware): MiddlewareQueue
-    {
-        return $middleware;
     }
 }

@@ -37,7 +37,8 @@
         "phpcbf": "phpcbf --colors -p src/",
         "phpstan": "phpstan analyse",
         "test": "phpunit --colors=always",
-        "phpmd": "phpmd src/ ansi phpmd.xml"
+        "phpmd": "phpmd src/ ansi phpmd.xml",
+        "coverage": "phpunit --coverage-html coverage-reports/"
     },
     "support": {
         "issues": "https://github.com/cnizzardini/cakephp-preloader/issues",
