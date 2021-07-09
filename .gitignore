@@ -47,3 +47,4 @@ nbproject/*
 tests/test_app/preload.php
 tests/test_app/a-unique-name.php
 /composer.lock
+/coverage-reports/

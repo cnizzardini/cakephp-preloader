@@ -61,8 +61,12 @@ Options:
 --plugins       A comma separated list of your plugins to load or `*` to load all plugins/*
 --quiet, -q     Enable quiet output.
 --verbose, -v   Enable verbose output.
-
 ```
+
+You may also load configurations from a `config/preloader_config.php` file. Please note, **command line arguments take
+precedence**. See [assets/preloader_config.php](assets/preloader_config.php) for a sample configuration file. If prefer
+handling configurations another way read the CakePHP documentation on
+[loading configuration files](https://book.cakephp.org/4/en/development/configuration.html#loading-configuration-files).
 
 ### Examples:
 

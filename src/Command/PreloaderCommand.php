@@ -7,6 +7,7 @@ use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
+use Cake\Core\Configure;
 use CakePreloader\Preloader;
 use SplFileInfo;
 
@@ -44,21 +45,24 @@ class PreloaderCommand extends Command
     {
         $this->cakephp();
         $this->packages($args);
-        $this->applications($args);
-        $name = (string)$args->getOption('name');
+        $this->app($args);
+        $this->plugins($args);
 
-        $result = $this->preloader->write($name);
+        $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
+        $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
+
+        $result = $this->preloader->write($path);
 
         if ($result) {
             $io->hr();
-            $io->success('Preload written to ' . $name);
+            $io->success('Preload written to ' . $path);
             $io->out('You must restart your PHP service for the changes to take effect.');
             $io->hr();
 
             return static::CODE_SUCCESS;
         }
 
-        $io->err('Error encountered writing to ' . $name);
+        $io->err('Error encountered writing to ' . $path);
 
         return static::CODE_ERROR;
     }
@@ -85,11 +89,15 @@ class PreloaderCommand extends Command
      */
     private function packages(Arguments $args): void
     {
-        if (empty($args->getOption('packages'))) {
+        $packages = $args->getOption('packages') ?? Configure::read('PreloaderConfig.packages');
+        if (empty($packages)) {
             return;
         }
 
-        $packages = explode(',', (string)$args->getOption('packages'));
+        if (is_string($packages)) {
+            $packages = explode(',', (string)$args->getOption('packages'));
+        }
+
         if (empty($packages)) {
             triggerWarning('Package list is empty');
 
@@ -122,20 +130,52 @@ class PreloaderCommand extends Command
     }
 
     /**
-     * Adds the users APP and plugins into the preloader
+     * Adds the users APP into the preloader
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @return void
      */
-    private function applications(Arguments $args): void
+    private function app(Arguments $args): void
     {
-        $apps = $args->getOption('app') ? [APP] : [];
+        if (($args->hasOption('app') && !$args->getOption('app')) && !Configure::read('PreloaderConfig.app')) {
+            return;
+        }
 
-        if ($args->getOption('plugins') === '*') {
-            $apps[] = ROOT . DS . 'plugins';
-        } elseif (!empty($args->getOption('plugins')) && is_string($args->getOption('plugins'))) {
-            foreach (explode(',', $args->getOption('plugins')) as $plugin) {
-                $apps[] = ROOT . DS . 'plugins' . DS . $plugin . DS . 'src';
+        $ignorePaths = ['src\/Console', 'src\/Command'];
+        if (!$args->getOption('phpunit')) {
+            $ignorePaths[] = 'tests\/';
+        }
+
+        $ignorePattern = implode('|', $ignorePaths);
+
+        $this->preloader->loadPath(APP, function (SplFileInfo $file) use ($ignorePattern) {
+            return !preg_match("/($ignorePattern)/", $file->getPathname());
+        });
+    }
+
+    /**
+     * Adds the users plugins into the preloader
+     *
+     * @param \Cake\Console\Arguments $args The command arguments.
+     * @return void
+     */
+    private function plugins(Arguments $args)
+    {
+        $plugins = $args->getOption('plugins') ?? Configure::read('PreloaderConfig.plugins');
+        if (empty($plugins)) {
+            return;
+        }
+
+        $paths = [];
+        if ($plugins === '*' || $plugins === true) {
+            $paths[] = ROOT . DS . 'plugins';
+        } elseif (is_string($plugins)) {
+            $plugins = explode(',', (string)$args->getOption('plugins'));
+        }
+
+        if (is_array($plugins)) {
+            foreach ($plugins as $plugin) {
+                $paths[] = ROOT . DS . 'plugins' . DS . $plugin . DS . 'src';
             }
         }
 
@@ -146,8 +186,8 @@ class PreloaderCommand extends Command
 
         $ignorePattern = implode('|', $ignorePaths);
 
-        foreach ($apps as $app) {
-            $this->preloader->loadPath($app, function (SplFileInfo $file) use ($ignorePattern) {
+        foreach ($paths as $path) {
+            $this->preloader->loadPath($path, function (SplFileInfo $file) use ($ignorePattern) {
                 return !preg_match("/($ignorePattern)/", $file->getPathname());
             });
         }
@@ -164,25 +204,26 @@ class PreloaderCommand extends Command
         $parser
             ->setDescription('Generate a preload file')
             ->addOption('name', [
-                'help' => 'The preload file path.',
-                'default' => ROOT . DS . 'preload.php',
+                'help' => 'The preload file path (default: ROOT . DS . preload.php)',
             ])
             ->addOption('app', [
                 'help' => 'Add your applications src directory into the preloader',
-                'boolean' => true,
-                'default' => false,
+                'boolean' => true
             ])
             ->addOption('plugins', [
                 'help' => 'A comma separated list of your plugins to load or `*` to load all plugins/*',
             ])
             ->addOption('packages', [
                 'help' => 'A comma separated list of packages (e.g. vendor-name/package-name) to add to the preloader',
-            ])
-            ->addOption('phpunit', [
-                'help' => 'For this packages internal test suite only',
+            ]);
+
+        if (defined('TEST')) {
+            $parser->addOption('phpunit', [
+                'help' => '(FOR TESTING ONLY)',
                 'boolean' => true,
                 'default' => false,
             ]);
+        }
 
         return $parser;
     }
