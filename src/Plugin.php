@@ -8,7 +8,6 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\PluginApplicationInterface;
 use CakePreloader\Command\PreloaderCommand;
-use RuntimeException;
 
 /**
  * Plugin for Preloader

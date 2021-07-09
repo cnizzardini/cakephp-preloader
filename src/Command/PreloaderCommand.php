@@ -208,7 +208,7 @@ class PreloaderCommand extends Command
             ])
             ->addOption('app', [
                 'help' => 'Add your applications src directory into the preloader',
-                'boolean' => true
+                'boolean' => true,
             ])
             ->addOption('plugins', [
                 'help' => 'A comma separated list of your plugins to load or `*` to load all plugins/*',
