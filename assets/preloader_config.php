@@ -1,4 +1,9 @@
 <?php
+/*
+|--------------------------------------------------------------------------
+| CakePHP Preloader Config | https://github.com/cnizzardini/cakephp-preloader
+|--------------------------------------------------------------------------
+*/
 
 return [
     'PreloaderConfig' => [
