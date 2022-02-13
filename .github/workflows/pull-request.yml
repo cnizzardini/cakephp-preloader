@@ -1,8 +1,6 @@
-name: Build
+name: Pull Request
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
 
 jobs:
@@ -75,3 +73,26 @@ jobs:
           composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress
           composer test
+  #
+  # Verify we can run php with opcache preload
+  #
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract Branch Name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: Docker Build
+        run: cd tests && docker build -t cakepreloader:test . --no-cache --BRANCH=dev-${{ steps.extract_branch.outputs.branch }}
+      - name: Docker Run
+        run: docker run -d cakepreloader:test
+      - name: Test Container
+        run: |
+          if docker ps | grep "cakepreloader:test"; then
+            echo "container is running"
+          else
+            echo "container is not running"
+            docker run cakepreloader:test && exit 1
+          fi
+
