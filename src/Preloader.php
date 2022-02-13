@@ -177,7 +177,7 @@ class Preloader
     /**
      * Returns false if the file name is not PSR-4, true if it as and is a class, null otherwise.
      *
-     * @param SplFileInfo $file Instance of SplFileInfo
+     * @param \SplFileInfo $file Instance of SplFileInfo
      * @return bool|null
      */
     private function isClass(SplFileInfo $file): ?bool
