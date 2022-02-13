@@ -75,12 +75,12 @@ class Preloader
 
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
-            if (Inflector::camelize($file->getFilename()) === $file->getFilename()) {
+            $result = $this->isClass($file);
+            if ($result === true) {
                 $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
-                continue;
+            } else if ($result === false) {
+                $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
             }
-
-            $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
         }
 
         return $this;
@@ -150,5 +150,24 @@ class Preloader
         }
 
         return $content;
+    }
+
+    private function isClass(SplFileInfo $file): ?bool
+    {
+        if (Inflector::camelize($file->getFilename()) !== $file->getFilename()) {
+            return false;
+        }
+
+        $contents = file_get_contents($file->getPathname());
+        if (!$contents) {
+            return null;
+        }
+
+        $className = str_replace('.php', '', $file->getFilename());
+        if (strstr($contents, "class $className") && strstr($contents, "namespace")) {
+            return true;
+        }
+
+        return null;
     }
 }

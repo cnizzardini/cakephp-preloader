@@ -4,7 +4,7 @@
 [![Build](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/php.yml/badge.svg)](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/php.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-preloader/badge.svg?branch=main)](https://coveralls.io/github/cnizzardini/cakephp-preloader?branch=main)
 [![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
-[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.0-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
+[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?logo=php)](https://php.net/)
 
 An OPCache preloader for CakePHP.
@@ -22,6 +22,10 @@ composer packages.
 For an alternative approach, checkout [DarkGhostHunter/Preloader](https://github.com/DarkGhostHunter/Preloader).
 
 For an OPCache UI, checkout [amnuts/opcache-gui](https://github.com/amnuts/opcache-gui).
+
+Any files which are not classes (i.e. Interfaces, Traits, Abstract Classes) are not added to the preloader. These will 
+be added to the opcache preload if they are required by another class. Function files are loaded using 
+`opcache_compile_file` instead of `require_once`.
 
 ## Installation
 
@@ -70,7 +74,7 @@ prefer handling configurations another way read the CakePHP documentation on
 
 ### Examples:
 
-Default loads in CakePHP core files excluding TestSuite, Console, Command, and Shell namespaces. Preload file is
+Default loads in CakePHP core files excluding TestSuite, Console, Command, and Shell namespaces. The preload file is 
 written to `ROOT . DS . 'preload.php'`:
 
 ```console
