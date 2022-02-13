@@ -57,7 +57,7 @@ class PreloaderCommand extends Command
         $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
         $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
 
-        $this->preloader->ignoreCli((bool) $args->getOption('cli'));
+        $this->preloader->ignoreCli((bool)$args->getOption('cli'));
         $result = $this->preloader->write($path);
 
         if ($result) {
