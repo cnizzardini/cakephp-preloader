@@ -26,8 +26,8 @@ class PreloaderCommandTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        @unlink(ROOT . DS . 'preload.php');
-        @unlink(ROOT . DS . 'a-unique-name.php');
+        //@unlink(ROOT . DS . 'preload.php');
+        //@unlink(ROOT . DS . 'a-unique-name.php');
     }
 
     public function test_default(): void
@@ -39,6 +39,8 @@ class PreloaderCommandTest extends TestCase
         /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertTrue(is_string($preload));
+
+        $this->assertStringContainsString("if (in_array(PHP_SAPI, ['cli', 'phpdbg'], true))", $preload);
 
         $contains = [
             'vendor/autoload.php',
@@ -62,6 +64,18 @@ class PreloaderCommandTest extends TestCase
         foreach ($excludes as $file) {
             $this->assertStringNotContainsString($file, $preload);
         }
+    }
+
+    public function test_cli(): void
+    {
+        $this->exec('preloader --cli');
+        $this->assertExitSuccess();
+        $this->assertFileExists(ROOT . DS . 'preload.php');
+
+        /** @var string $preload */
+        $preload = file_get_contents(ROOT . DS . 'preload.php');
+        $this->assertTrue(is_string($preload));
+        $this->assertStringContainsString("if (in_array(PHP_SAPI, ['phpdbg'], true))", $preload);
     }
 
     public function test_with_name(): void

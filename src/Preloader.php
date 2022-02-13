@@ -20,9 +20,9 @@ use SplFileInfo;
 class Preloader
 {
     /**
-     * @var bool Should the preload file return early (not load) when run by php-cli?
+     * @var bool Should the preload file continue when run via php-cli?
      */
-    private bool $ignoreCli = true;
+    private bool $allowCli = false;
 
     /**
      * An array of PreloadResource instances
@@ -110,12 +110,12 @@ class Preloader
     }
 
     /**
-     * @param bool $bool Should the preload file return early (not load) when run by php-cli?
+     * @param bool $bool Should the preload file continue when run via php-cli?
      * @return $this
      */
-    public function ignoreCli(bool $bool)
+    public function allowCli(bool $bool)
     {
-        $this->ignoreCli = $bool;
+        $this->allowCli = $bool;
 
         return $this;
     }
@@ -132,10 +132,10 @@ class Preloader
 
         $title = sprintf("# Preload Generated at %s \n", FrozenTime::now());
 
-        if ($this->ignoreCli) {
-            $ignores = "['cli', 'phpdbg']";
-        } else {
+        if ($this->allowCli) {
             $ignores = "['phpdbg']";
+        } else {
+            $ignores = "['cli', 'phpdbg']";
         }
 
         echo "<?php\n\n";
