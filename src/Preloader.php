@@ -9,6 +9,7 @@ use Cake\Filesystem\Filesystem;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Inflector;
 use CakePreloader\Exception\ResourceNotFoundException;
+use PHPStan\Analyser\IgnoredError;
 use RuntimeException;
 use SplFileInfo;
 
@@ -19,6 +20,11 @@ use SplFileInfo;
  */
 class Preloader
 {
+    /**
+     * @var bool Should the preload file return early (not load) when run by php-cli?
+     */
+    private bool $ignoreCli = true;
+
     /**
      * An array of PreloadResource instances
      *
@@ -105,6 +111,19 @@ class Preloader
     }
 
     /**
+     * Should the preload file return early (not load) when run by php-cli?
+     *
+     * @param bool $bool
+     * @return $this
+     */
+    public function ignoreCli(bool $bool)
+    {
+        $this->ignoreCli = $bool;
+
+        return $this;
+    }
+
+    /**
      * Returns a string to be written to the preload file
      *
      * @return string
@@ -116,9 +135,15 @@ class Preloader
 
         $title = sprintf("# Preload Generated at %s \n", FrozenTime::now());
 
+        if ($this->ignoreCli) {
+            $ignores = "['cli', 'phpdbg']";
+        } else {
+            $ignores = "['phpdbg']";
+        }
+
         echo "<?php\n\n";
         echo "$title \n";
-        echo "if (in_array(PHP_SAPI, ['cli', 'phpdbg'], true)) {\n";
+        echo "if (in_array(PHP_SAPI, $ignores, true)) {\n";
         echo "\treturn;\n";
         echo "}\n\n";
         echo "require_once('" . ROOT . DS . 'vendor' . DS . 'autoload.php' . "'); \n";

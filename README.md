@@ -63,6 +63,7 @@ Options:
 --name          The preload file path. (default: ROOT . DS . 'preload.php')
 --packages      A comma separated list of packages (e.g. vendor-name/package-name) to add to the preloader
 --plugins       A comma separated list of your plugins to load or `*` to load all plugins/*
+--cli           Should the preloader file exit when run via the php-cli? (default: true)
 --quiet, -q     Enable quiet output.
 --verbose, -v   Enable verbose output.
 ```
@@ -171,11 +172,11 @@ ab -n 10000 -c 10 http://localhost:8080/public/actors.json
 
 I ran each 3 times:
 
-| Type      | Run 1 | Run 2 | Run 3 |
-| ----------- | ----------- | ----------- | ----------- |
-| No Preload | 301.30 [#/sec] (mean) |  335.12 [#/sec] (mean) | 322.41 [#/sec] (mean) |
-| `CAKE` only | 447.92 [#/sec] (mean) |  448.48 [#/sec] (mean) | 446.53 [#/sec] (mean) |
-| `CAKE` + `APP` | 457.62 [#/sec] (mean) |  455.40 [#/sec] (mean) | 394.89 [#/sec] (mean) |
+| Type           | Run 1                 | Run 2                 | Run 3                 |
+|----------------|-----------------------|-----------------------|-----------------------|
+| No Preload     | 301.30 [#/sec] (mean) | 335.12 [#/sec] (mean) | 322.41 [#/sec] (mean) |
+| `CAKE` only    | 447.92 [#/sec] (mean) | 448.48 [#/sec] (mean) | 446.53 [#/sec] (mean) |
+| `CAKE` + `APP` | 457.62 [#/sec] (mean) | 455.40 [#/sec] (mean) | 394.89 [#/sec] (mean) |
 
 ## Tests / Analysis
 
