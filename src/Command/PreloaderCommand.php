@@ -226,7 +226,7 @@ class PreloaderCommand extends Command
             ->addOption('cli', [
                 'help' => 'Should the preloader load for php-cli?',
                 'boolean' => true,
-                'default' => false
+                'default' => false,
             ]);
 
         if (defined('TEST')) {

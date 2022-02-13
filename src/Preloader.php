@@ -9,7 +9,6 @@ use Cake\Filesystem\Filesystem;
 use Cake\I18n\FrozenTime;
 use Cake\Utility\Inflector;
 use CakePreloader\Exception\ResourceNotFoundException;
-use PHPStan\Analyser\IgnoredError;
 use RuntimeException;
 use SplFileInfo;
 
@@ -84,7 +83,7 @@ class Preloader
             $result = $this->isClass($file);
             if ($result === true) {
                 $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
-            } else if ($result === false) {
+            } elseif ($result === false) {
                 $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
             }
         }
@@ -111,9 +110,7 @@ class Preloader
     }
 
     /**
-     * Should the preload file return early (not load) when run by php-cli?
-     *
-     * @param bool $bool
+     * @param bool $bool Should the preload file return early (not load) when run by php-cli?
      * @return $this
      */
     public function ignoreCli(bool $bool)
@@ -177,6 +174,12 @@ class Preloader
         return $content;
     }
 
+    /**
+     * Returns false if the file name is not PSR-4, true if it as and is a class, null otherwise.
+     *
+     * @param SplFileInfo $file Instance of SplFileInfo
+     * @return bool|null
+     */
     private function isClass(SplFileInfo $file): ?bool
     {
         if (Inflector::camelize($file->getFilename()) !== $file->getFilename()) {
@@ -189,7 +192,7 @@ class Preloader
         }
 
         $className = str_replace('.php', '', $file->getFilename());
-        if (strstr($contents, "class $className") && strstr($contents, "namespace")) {
+        if (strstr($contents, "class $className") && strstr($contents, 'namespace')) {
             return true;
         }
 
