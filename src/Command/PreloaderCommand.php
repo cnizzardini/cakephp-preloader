@@ -221,6 +221,11 @@ class PreloaderCommand extends Command
             ])
             ->addOption('packages', [
                 'help' => 'A comma separated list of packages (e.g. vendor-name/package-name) to add to the preloader',
+            ])
+            ->addOption('cli', [
+                'help' => 'Should the preloader load for php-cli?',
+                'boolean' => true,
+                'default' => false
             ]);
 
         if (defined('TEST')) {
