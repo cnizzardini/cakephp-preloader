@@ -84,7 +84,7 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - name: Docker Build
-        run: docker build -t cakepreloader:test tests/Dockerfile --no-cache --BRANCH=dev-${{ steps.extract_branch.outputs.branch }}
+        run: docker build -t cakepreloader:test tests/Dockerfile --no-cache --build-arg BRANCH=dev-${{ steps.extract_branch.outputs.branch }}
       - name: Docker Run
         run: docker run -d cakepreloader:test
       - name: Test Container
