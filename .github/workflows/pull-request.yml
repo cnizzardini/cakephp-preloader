@@ -79,9 +79,11 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: nelonoel/branch-name@v1
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.1
       - name: Docker Build
-        run: docker build -t cakepreloader:test tests/Dockerfile --no-cache --build-arg BRANCH=dev-${BRANCH_NAME}
+        run: docker build -t cakepreloader:test tests/Dockerfile --no-cache --build-arg BRANCH=dev-${{ steps.branch-name.outputs.current_branch }}
       - name: Docker Run
         run: docker run -d cakepreloader:test
       - name: Test Container
