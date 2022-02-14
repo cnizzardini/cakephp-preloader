@@ -26,8 +26,8 @@ class PreloaderCommandTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        //@unlink(ROOT . DS . 'preload.php');
-        //@unlink(ROOT . DS . 'a-unique-name.php');
+        @unlink(ROOT . DS . 'preload.php');
+        @unlink(ROOT . DS . 'a-unique-name.php');
     }
 
     public function test_default(): void
