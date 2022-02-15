@@ -8,7 +8,9 @@ use Cake\Event\EventList;
 use Cake\Event\EventManager;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use CakePreloader\Exception\PreloadWriteException;
 use CakePreloader\Preloader;
+use CakePreloader\PreloaderService;
 use CakePreloader\PreloadResource;
 use RuntimeException;
 
@@ -21,6 +23,10 @@ class PreloaderCommandTest extends TestCase
         parent::setUp();
         $this->setAppNamespace('CakePreloader\Test\App');
         $this->useCommandRunner();
+
+        $this->mockService(PreloaderService::class, function () {
+            return new PreloaderService(new Preloader());
+        });
     }
 
     public function tearDown(): void
@@ -143,12 +149,6 @@ class PreloaderCommandTest extends TestCase
         $this->assertStringContainsString('vendortwo/packagetwo/src/VendorTwoPackageTwoTestClassZz.php', $preload);
     }
 
-    public function test_invalid_file(): void
-    {
-        $this->expectException(RuntimeException::class);
-        $this->exec('preloader --name="/etc/passwd"');
-    }
-
     public function test_before_write_event(): void
     {
         $eventManager = EventManager::instance()->setEventList(new EventList());
@@ -193,5 +193,32 @@ class PreloaderCommandTest extends TestCase
         // packages
         $this->assertStringContainsString('vendorone/packageone/src/VendorOnePackageOneTestClassZz.php', $preload);
         $this->assertStringContainsString('vendortwo/packagetwo/src/VendorTwoPackageTwoTestClassZz.php', $preload);
+    }
+
+    public function test_invalid_file(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->exec('preloader --name="/etc/passwd"');
+    }
+
+    public function test_package_warning(): void
+    {
+        $this->exec('preloader --packages=a,b --phpunit');
+        $this->assertOutputContains('One or more packages not found');
+    }
+
+    public function test_write_exception(): void
+    {
+        $this->mockService(PreloaderService::class, function () {
+            $mock = $this->createPartialMock(Preloader::class, ['write']);
+            $mock
+                ->method('write')
+                ->willThrowException(new PreloadWriteException());
+
+            return new PreloaderService($mock);
+        });
+
+        $this->exec('preloader --phpunit');
+        $this->assertExitError();
     }
 }

@@ -6,6 +6,7 @@ namespace CakePreloader;
 use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
+use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use CakePreloader\Command\PreloaderCommand;
 
@@ -51,5 +52,20 @@ class Plugin extends BasePlugin
         $commands->add('preloader', PreloaderCommand::class);
 
         return $commands;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function services(ContainerInterface $container): void
+    {
+        if (PHP_SAPI === 'cli') {
+            $container
+                ->add(PreloaderService::class);
+
+            $container
+                ->add(PreloaderCommand::class)
+                ->addArgument(PreloaderService::class);
+        }
     }
 }
