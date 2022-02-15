@@ -1,7 +1,7 @@
 # CakePHP Preloader
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/cnizzardini/cakephp-preloader.svg?style=flat-square)](https://packagist.org/packages/cnizzardini/cakephp-preloader)
-[![Build](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/php.yml/badge.svg)](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/php.yml)
+[![Build](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/merge.yml/badge.svg)](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/merge.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-preloader/badge.svg?branch=main)](https://coveralls.io/github/cnizzardini/cakephp-preloader?branch=main)
 [![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
 [![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
