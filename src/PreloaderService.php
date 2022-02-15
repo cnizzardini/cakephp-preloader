@@ -44,7 +44,7 @@ class PreloaderService
         } else {
             $this->preloader->allowCli(Configure::read('PreloaderConfig.cli') ?? false);
         }
-        
+
         if ($this->preloader->write($path)) {
             return $path;
         }
