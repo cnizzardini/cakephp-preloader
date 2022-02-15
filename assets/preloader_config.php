@@ -9,7 +9,7 @@ return [
     'PreloaderConfig' => [
         /*
         |--------------------------------------------------------------------------
-        | name <string>
+        | name <string> |
         |--------------------------------------------------------------------------
         |
         | The preload file path. (default: ROOT . DS . 'preload.php')
@@ -43,11 +43,21 @@ return [
         | plugins <string[]|boolean>
         |--------------------------------------------------------------------------
         |
-        | An array of your applications plugins to include in your preloader. To include
-        | all your plugins set to `true`.
+        | An array of your applications plugins to include in your preloader. To
+        | include all your plugins set to `true`.
         |
         | @example ['MyPlugin','MyOtherPlugin']
         */
         'plugins' => [],
+
+        /*
+        |--------------------------------------------------------------------------
+        | cli <boolean>
+        |--------------------------------------------------------------------------
+        |
+        | Load the preload file when executing code via the php-cli (default: false)?
+        |
+        */
+        'cli' => false,
     ]
 ];

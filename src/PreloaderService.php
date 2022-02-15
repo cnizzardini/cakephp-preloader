@@ -39,8 +39,12 @@ class PreloaderService
         $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
         $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
 
-        $this->preloader->allowCli((bool)$args->getOption('cli'));
-
+        if ($args->hasOption('cli')) {
+            $this->preloader->allowCli((bool)$args->getOption('cli'));
+        } else {
+            $this->preloader->allowCli(Configure::read('PreloaderConfig.cli') ?? false);
+        }
+        
         if ($this->preloader->write($path)) {
             return $path;
         }

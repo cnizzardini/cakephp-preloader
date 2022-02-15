@@ -143,9 +143,17 @@ $preloader->write('/optional/path/to/preloader-file.php');
 
 ## Performance:
 
-Obviously, these types of benchmarks should be taken with a bit of a gain of salt. I benchmarked this using apache bench with this project here: https://github.com/mixerapi/demo which is a dockerized REST API (LEMP stack on alpine + php-fpm 7.4). `DEBUG` was set to false.
+Obviously, these types of benchmarks should be taken with a bit of a gain of salt. I benchmarked this using apache 
+bench with this project here: https://github.com/mixerapi/demo which is a dockerized REST API 
+(LEMP stack on alpine + php-fpm 8.0). CakePHP `DEBUG` was set to false.
 
 ```ini
+extension=intl.so
+extension=pdo_mysql.so
+extension=sodium
+extension=zip.so
+zend_extension=opcache.so
+
 [php]
 session.auto_start = Off
 short_open_tag = Off
@@ -164,19 +172,14 @@ realpath_cache_ttl = 600
 
 Note: `opcache.preload_user=root` and `opcache.preload=/srv/app/preload.php` were disabled for the no preload run.
 
-Command:
+| Type                      | JSON View (no db)      | JSON View (db select)   |
+|---------------------------|------------------------|-------------------------|
+| OPCache Only              | 892.69 [#/sec] (mean)  | 805.29 [#/sec] (mean)   |
+| OPCache Preload (default) | 1149.08 [#/sec] (mean) | 976.30 [#/sec] (mean)   |
 
-```console
-ab -n 10000 -c 10 http://localhost:8080/public/actors.json
-```
 
-I ran each 3 times:
-
-| Type           | Run 1                 | Run 2                 | Run 3                 |
-|----------------|-----------------------|-----------------------|-----------------------|
-| No Preload     | 301.30 [#/sec] (mean) | 335.12 [#/sec] (mean) | 322.41 [#/sec] (mean) |
-| `CAKE` only    | 447.92 [#/sec] (mean) | 448.48 [#/sec] (mean) | 446.53 [#/sec] (mean) |
-| `CAKE` + `APP` | 457.62 [#/sec] (mean) | 455.40 [#/sec] (mean) | 394.89 [#/sec] (mean) |
+This is 28% more requests per second for JSON responses and 21% more requests per second with JSON + simple SQL select 
+when OPCache Preload is enabled.
 
 ## Tests / Analysis
 
