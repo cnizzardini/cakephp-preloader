@@ -4,7 +4,7 @@
 [![Build](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/php.yml/badge.svg)](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/php.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-preloader/badge.svg?branch=main)](https://coveralls.io/github/cnizzardini/cakephp-preloader?branch=main)
 [![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
-[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.0-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
+[![CakePHP](https://img.shields.io/badge/cakephp-%3E%3D%204.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?logo=php)](https://php.net/)
 
 An OPCache preloader for CakePHP.
@@ -18,6 +18,10 @@ files. Goals:
 - Allow optionally loading additional resources such as CakePHP plugins, userland app, and
 composer packages.
 - Provide a simplistic API for writing a custom preloader.
+
+Any files which are not classes (i.e. Interfaces, Traits, Abstract Classes) are not added to the preload file. These 
+will be added automically by PHPs opcache preload if they are required by another class. Function files are loaded using
+`opcache_compile_file` instead of `require_once`.
 
 For an alternative approach, checkout [DarkGhostHunter/Preloader](https://github.com/DarkGhostHunter/Preloader).
 
@@ -59,6 +63,7 @@ Options:
 --name          The preload file path. (default: ROOT . DS . 'preload.php')
 --packages      A comma separated list of packages (e.g. vendor-name/package-name) to add to the preloader
 --plugins       A comma separated list of your plugins to load or `*` to load all plugins/*
+--cli           Should the preloader file exit when run via the php-cli? (default: true)
 --quiet, -q     Enable quiet output.
 --verbose, -v   Enable verbose output.
 ```
@@ -70,7 +75,7 @@ prefer handling configurations another way read the CakePHP documentation on
 
 ### Examples:
 
-Default loads in CakePHP core files excluding TestSuite, Console, Command, and Shell namespaces. Preload file is
+Default loads in CakePHP core files excluding TestSuite, Console, Command, and Shell namespaces. The preload file is 
 written to `ROOT . DS . 'preload.php'`:
 
 ```console
@@ -167,11 +172,11 @@ ab -n 10000 -c 10 http://localhost:8080/public/actors.json
 
 I ran each 3 times:
 
-| Type      | Run 1 | Run 2 | Run 3 |
-| ----------- | ----------- | ----------- | ----------- |
-| No Preload | 301.30 [#/sec] (mean) |  335.12 [#/sec] (mean) | 322.41 [#/sec] (mean) |
-| `CAKE` only | 447.92 [#/sec] (mean) |  448.48 [#/sec] (mean) | 446.53 [#/sec] (mean) |
-| `CAKE` + `APP` | 457.62 [#/sec] (mean) |  455.40 [#/sec] (mean) | 394.89 [#/sec] (mean) |
+| Type           | Run 1                 | Run 2                 | Run 3                 |
+|----------------|-----------------------|-----------------------|-----------------------|
+| No Preload     | 301.30 [#/sec] (mean) | 335.12 [#/sec] (mean) | 322.41 [#/sec] (mean) |
+| `CAKE` only    | 447.92 [#/sec] (mean) | 448.48 [#/sec] (mean) | 446.53 [#/sec] (mean) |
+| `CAKE` + `APP` | 457.62 [#/sec] (mean) | 455.40 [#/sec] (mean) | 394.89 [#/sec] (mean) |
 
 ## Tests / Analysis
 

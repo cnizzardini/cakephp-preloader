@@ -1,0 +1,99 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+jobs:
+  run:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        operating-system: [ ubuntu-20.04 ]
+        php-versions: ['7.4', '8.0', '8.1']
+
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, intl, xdebug
+
+      - name: PHP Version
+        run: php -v
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: |
+          composer validate
+          composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Test (8.0)
+        if: ${{ matrix.php-versions != '7.4' }}
+        run: vendor/bin/phpunit
+
+      - name: Test + Coverage + Static Analysis (7.4 only)
+        if: ${{ matrix.php-versions == '7.4' }}
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer check
+          echo ${{ matrix.php-versions }}
+          export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
+          vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+  #
+  # CakePHP version compatability
+  #
+  compatibility:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: ['~4.2.0', '^4.3']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, intl
+
+      - name: PHP Version
+        run: php -v
+
+      - name: CakePHP ${{matrix.version}} Compatability
+        run: |
+          composer self-update
+          rm -rf composer.lock
+          composer require cakephp/cakephp:${{matrix.version}} --no-update
+          composer install --prefer-dist --no-progress
+          composer test
+  #
+  # Verify we can run php with opcache preload
+  #
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.1
+      - name: Docker Build
+        run: docker build -t cakepreloader:test tests/ --no-cache --build-arg BRANCH=dev-${{ steps.branch-name.outputs.current_branch }}
+      - name: Docker Run
+        run: docker run -d cakepreloader:test
+      - name: Test Container
+        run: |
+          if docker ps | grep "cakepreloader:test"; then
+            echo "container is running"
+          else
+            echo "container is not running"
+            docker run cakepreloader:test && exit 1
+          fi
+

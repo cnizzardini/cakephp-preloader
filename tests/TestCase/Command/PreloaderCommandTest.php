@@ -36,9 +36,13 @@ class PreloaderCommandTest extends TestCase
         $this->assertExitSuccess();
         $this->assertFileExists(ROOT . DS . 'preload.php');
 
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
+        $this->assertTrue(is_string($preload));
 
-        $lines = [
+        $this->assertStringContainsString("if (in_array(PHP_SAPI, ['cli', 'phpdbg'], true))", $preload);
+
+        $contains = [
             'vendor/autoload.php',
             'vendor/cakephp/cakephp/src/Cache/Cache.php',
             'vendor/cakephp/cakephp/src/basics.php',
@@ -46,9 +50,32 @@ class PreloaderCommandTest extends TestCase
             'opcache_compile_file'
         ];
 
-        foreach ($lines as $file) {
+        foreach ($contains as $file) {
             $this->assertStringContainsString($file, $preload);
         }
+
+        $excludes = [
+            'vendor/cakephp/cakephp/src/Database/Exception.php',
+            'vendor/cakephp/cakephp/src/Database/Expression/Comparison.php',
+            'vendor/cakephp/cakephp/src/Http/ControllerFactory.php',
+            'vendor/cakephp/cakephp/src/Routing/Exception/MissingControllerException.php',
+        ];
+
+        foreach ($excludes as $file) {
+            $this->assertStringNotContainsString($file, $preload);
+        }
+    }
+
+    public function test_cli(): void
+    {
+        $this->exec('preloader --cli');
+        $this->assertExitSuccess();
+        $this->assertFileExists(ROOT . DS . 'preload.php');
+
+        /** @var string $preload */
+        $preload = file_get_contents(ROOT . DS . 'preload.php');
+        $this->assertTrue(is_string($preload));
+        $this->assertStringContainsString("if (in_array(PHP_SAPI, ['phpdbg'], true))", $preload);
     }
 
     public function test_with_name(): void
@@ -64,6 +91,7 @@ class PreloaderCommandTest extends TestCase
     {
         $this->exec('preloader --app --phpunit');
         $this->assertExitSuccess();
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('test_app/src/Application.php', $preload);
     }
@@ -71,6 +99,7 @@ class PreloaderCommandTest extends TestCase
     public function test_with_one_plugin(): void
     {
         $this->exec('preloader --plugins=MyPluginOneZz --phpunit');
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('plugins/MyPluginOneZz/src/Plugin.php', $preload);
     }
@@ -78,6 +107,7 @@ class PreloaderCommandTest extends TestCase
     public function test_with_multiple_plugins(): void
     {
         $this->exec('preloader --plugins=MyPluginOneZz,MyPluginTwoZz --phpunit');
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('plugins/MyPluginOneZz/src/Plugin.php', $preload);
         $this->assertStringContainsString('plugins/MyPluginTwoZz/src/Plugin.php', $preload);
@@ -86,6 +116,7 @@ class PreloaderCommandTest extends TestCase
     public function test_with_plugins_wildcard(): void
     {
         $this->exec('preloader --plugins=* --phpunit');
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('plugins/MyPluginOneZz/src/Plugin.php', $preload);
         $this->assertStringContainsString('plugins/MyPluginTwoZz/src/Plugin.php', $preload);
@@ -96,6 +127,7 @@ class PreloaderCommandTest extends TestCase
         $this->exec('preloader --packages=vendorone/packageone --phpunit');
         $this->assertExitSuccess();
 
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('vendorone/packageone/src/VendorOnePackageOneTestClassZz.php', $preload);
     }
@@ -105,6 +137,7 @@ class PreloaderCommandTest extends TestCase
         $this->exec('preloader --packages=vendorone/packageone,vendortwo/packagetwo --phpunit');
         $this->assertExitSuccess();
 
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString('vendorone/packageone/src/VendorOnePackageOneTestClassZz.php', $preload);
         $this->assertStringContainsString('vendortwo/packagetwo/src/VendorTwoPackageTwoTestClassZz.php', $preload);
@@ -132,6 +165,7 @@ class PreloaderCommandTest extends TestCase
         $this->exec('preloader');
         $this->assertEventFired('CakePreloader.beforeWrite');
 
+        /** @var string $preload */
         $preload = file_get_contents(ROOT . DS . 'preload.php');
         $this->assertStringContainsString(__FILE__, $preload);
     }
@@ -146,6 +180,7 @@ class PreloaderCommandTest extends TestCase
         $this->assertExitSuccess();
         $this->assertFileExists($path);
 
+        /** @var string $preload */
         $preload = file_get_contents($path);
 
         // app

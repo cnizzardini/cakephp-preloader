@@ -57,6 +57,7 @@ class PreloaderCommand extends Command
         $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
         $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
 
+        $this->preloader->allowCli((bool)$args->getOption('cli'));
         $result = $this->preloader->write($path);
 
         if ($result) {
@@ -221,6 +222,11 @@ class PreloaderCommand extends Command
             ])
             ->addOption('packages', [
                 'help' => 'A comma separated list of packages (e.g. vendor-name/package-name) to add to the preloader',
+            ])
+            ->addOption('cli', [
+                'help' => 'Should the preloader file load when run via php-cli?',
+                'boolean' => true,
+                'default' => false,
             ]);
 
         if (defined('TEST')) {

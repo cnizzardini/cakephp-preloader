@@ -20,6 +20,11 @@ use SplFileInfo;
 class Preloader
 {
     /**
+     * @var bool Should the preload file continue when run via php-cli?
+     */
+    private bool $allowCli = false;
+
+    /**
      * An array of PreloadResource instances
      *
      * @var \CakePreloader\PreloadResource[]
@@ -75,12 +80,12 @@ class Preloader
 
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
-            if (Inflector::camelize($file->getFilename()) === $file->getFilename()) {
+            $result = $this->isClass($file);
+            if ($result === true) {
                 $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
-                continue;
+            } elseif ($result === false) {
+                $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
             }
-
-            $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
         }
 
         return $this;
@@ -105,6 +110,17 @@ class Preloader
     }
 
     /**
+     * @param bool $bool Should the preload file continue when run via php-cli?
+     * @return $this
+     */
+    public function allowCli(bool $bool)
+    {
+        $this->allowCli = $bool;
+
+        return $this;
+    }
+
+    /**
      * Returns a string to be written to the preload file
      *
      * @return string
@@ -116,9 +132,15 @@ class Preloader
 
         $title = sprintf("# Preload Generated at %s \n", FrozenTime::now());
 
+        if ($this->allowCli) {
+            $ignores = "['phpdbg']";
+        } else {
+            $ignores = "['cli', 'phpdbg']";
+        }
+
         echo "<?php\n\n";
         echo "$title \n";
-        echo "if (in_array(PHP_SAPI, ['cli', 'phpdbg'], true)) {\n";
+        echo "if (in_array(PHP_SAPI, $ignores, true)) {\n";
         echo "\treturn;\n";
         echo "}\n\n";
         echo "require_once('" . ROOT . DS . 'vendor' . DS . 'autoload.php' . "'); \n";
@@ -150,5 +172,30 @@ class Preloader
         }
 
         return $content;
+    }
+
+    /**
+     * Returns false if the file name is not PSR-4, true if it as and is a class, null otherwise.
+     *
+     * @param \SplFileInfo $file Instance of SplFileInfo
+     * @return bool|null
+     */
+    private function isClass(SplFileInfo $file): ?bool
+    {
+        if (Inflector::camelize($file->getFilename()) !== $file->getFilename()) {
+            return false;
+        }
+
+        $contents = file_get_contents($file->getPathname());
+        if (!$contents) {
+            return null;
+        }
+
+        $className = str_replace('.php', '', $file->getFilename());
+        if (strstr($contents, "class $className") && strstr($contents, 'namespace')) {
+            return true;
+        }
+
+        return null;
     }
 }
