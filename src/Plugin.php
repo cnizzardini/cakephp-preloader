@@ -9,8 +9,6 @@ use Cake\Core\Configure;
 use Cake\Core\ContainerInterface;
 use Cake\Core\PluginApplicationInterface;
 use CakePreloader\Command\PreloaderCommand;
-use MixerApi\Command\InstallCommand;
-use MixerApi\Service\InstallerService;
 
 /**
  * Plugin for Preloader

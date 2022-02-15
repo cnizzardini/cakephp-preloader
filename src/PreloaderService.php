@@ -14,7 +14,7 @@ class PreloaderService
     private Preloader $preloader;
 
     /**
-     * @param \CakePreloader\Preloader|null $preloader
+     * @param \CakePreloader\Preloader|null $preloader Preloader class, an instance is automatically created if null.
      */
     public function __construct(?Preloader $preloader = null)
     {
@@ -24,9 +24,10 @@ class PreloaderService
     /**
      * Generate preloader. Returns the path on success, otherwise throws exception.
      *
-     * @param Arguments $args
+     * @param \Cake\Console\Arguments $args CLI Arguments
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return string
-     * @throws PreloadWriteException
+     * @throws \CakePreloader\Exception\PreloadWriteException
      */
     public function generate(Arguments $args, ConsoleIo $io): string
     {
@@ -65,6 +66,7 @@ class PreloaderService
      * Adds a list of vendor packages
      *
      * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return void
      */
     private function packages(Arguments $args, ConsoleIo $io): void

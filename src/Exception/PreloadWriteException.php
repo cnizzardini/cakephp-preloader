@@ -10,5 +10,4 @@ use Cake\Core\Exception\CakeException;
  */
 class PreloadWriteException extends CakeException
 {
-
 }

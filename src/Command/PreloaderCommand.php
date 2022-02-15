@@ -23,7 +23,7 @@ class PreloaderCommand extends Command
     private PreloaderService $preloaderService;
 
     /**
-     * PreloaderCommand constructor.
+     * @param \CakePreloader\PreloaderService $preloaderService PreloaderService
      */
     public function __construct(PreloaderService $preloaderService)
     {
@@ -52,9 +52,11 @@ class PreloaderCommand extends Command
             $io->success('Preload written to ' . $path);
             $io->out('You must restart your PHP service for the changes to take effect.');
             $io->hr();
+
             return static::CODE_SUCCESS;
         } catch (PreloadWriteException $e) {
             $io->err($e->getMessage());
+
             return static::CODE_ERROR;
         }
     }
