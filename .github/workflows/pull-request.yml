@@ -94,6 +94,6 @@ jobs:
             echo "container is running"
           else
             echo "container is not running"
-            docker run cakepreloader:test && exit 1
+            exit 1
           fi
 
