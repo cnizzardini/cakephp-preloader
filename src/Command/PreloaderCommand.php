@@ -8,8 +8,8 @@ use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
-use CakePreloader\Preloader;
-use SplFileInfo;
+use CakePreloader\Exception\PreloadWriteException;
+use CakePreloader\PreloaderService;
 
 /**
  * Generates a preload file
@@ -20,18 +20,15 @@ use SplFileInfo;
  */
 class PreloaderCommand extends Command
 {
-    /**
-     * @var \CakePreloader\Preloader
-     */
-    private Preloader $preloader;
+    private PreloaderService $preloaderService;
 
     /**
      * PreloaderCommand constructor.
      */
-    public function __construct()
+    public function __construct(PreloaderService $preloaderService)
     {
         parent::__construct();
-        $this->preloader = new Preloader();
+        $this->preloaderService = $preloaderService;
     }
 
     /**
@@ -47,156 +44,18 @@ class PreloaderCommand extends Command
         $io->out('Generating preloader...');
         $io->hr();
 
-        $this->cakephp();
-        $this->packages($args);
-        $this->app($args);
-        $this->plugins($args);
-
         $io->info('Preloader Config: ' . (Configure::check('PreloaderConfig') ? 'present' : 'not found'));
 
-        $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
-        $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
-
-        $this->preloader->allowCli((bool)$args->getOption('cli'));
-        $result = $this->preloader->write($path);
-
-        if ($result) {
+        try {
+            $path = $this->preloaderService->generate($args, $io);
             $io->hr();
             $io->success('Preload written to ' . $path);
             $io->out('You must restart your PHP service for the changes to take effect.');
             $io->hr();
-
             return static::CODE_SUCCESS;
-        }
-
-        $io->err('Error encountered writing to ' . $path);
-
-        return static::CODE_ERROR;
-    }
-
-    /**
-     * Loads the CakePHP framework
-     *
-     * @return void
-     */
-    private function cakephp(): void
-    {
-        $ignorePaths = implode('|', ['src\/Console', 'src\/Command', 'src\/Shell', 'src\/TestSuite']);
-
-        $this->preloader->loadPath(CAKE, function (SplFileInfo $file) use ($ignorePaths) {
-            return !preg_match("/($ignorePaths)/", $file->getPathname());
-        });
-    }
-
-    /**
-     * Adds a list of vendor packages
-     *
-     * @param \Cake\Console\Arguments $args The command arguments.
-     * @return void
-     */
-    private function packages(Arguments $args): void
-    {
-        $packages = $args->getOption('packages') ?? Configure::read('PreloaderConfig.packages');
-        if (empty($packages)) {
-            return;
-        }
-
-        if (is_string($packages)) {
-            $packages = explode(',', (string)$args->getOption('packages'));
-        }
-
-        if (empty($packages)) {
-            triggerWarning('Package list is empty');
-
-            return;
-        }
-
-        $packages = array_map(
-            function ($package) {
-                return ROOT . DS . 'vendor' . DS . $package;
-            },
-            $packages
-        );
-
-        $packages = array_filter($packages, function ($package) {
-            if (file_exists($package)) {
-                return true;
-            }
-            triggerWarning("Package $package could not be located");
-        });
-
-        foreach ($packages as $package) {
-            $this->preloader->loadPath($package, function (SplFileInfo $file) use ($args) {
-                if ($args->getOption('phpunit')) {
-                    return true;
-                }
-
-                return !strstr($file->getPath(), '/tests/');
-            });
-        }
-    }
-
-    /**
-     * Adds the users APP into the preloader
-     *
-     * @param \Cake\Console\Arguments $args The command arguments.
-     * @return void
-     */
-    private function app(Arguments $args): void
-    {
-        if (($args->hasOption('app') && !$args->getOption('app')) && !Configure::read('PreloaderConfig.app')) {
-            return;
-        }
-
-        $ignorePaths = ['src\/Console', 'src\/Command'];
-        if (!$args->getOption('phpunit')) {
-            $ignorePaths[] = 'tests\/';
-        }
-
-        $ignorePattern = implode('|', $ignorePaths);
-
-        $this->preloader->loadPath(APP, function (SplFileInfo $file) use ($ignorePattern) {
-            return !preg_match("/($ignorePattern)/", $file->getPathname());
-        });
-    }
-
-    /**
-     * Adds the users plugins into the preloader
-     *
-     * @param \Cake\Console\Arguments $args The command arguments.
-     * @return void
-     */
-    private function plugins(Arguments $args)
-    {
-        $plugins = $args->getOption('plugins') ?? Configure::read('PreloaderConfig.plugins');
-        if (empty($plugins)) {
-            return;
-        }
-
-        $paths = [];
-        if ($plugins === '*' || $plugins === true) {
-            $paths[] = ROOT . DS . 'plugins';
-        } elseif (is_string($plugins)) {
-            $plugins = explode(',', (string)$args->getOption('plugins'));
-        }
-
-        if (is_array($plugins)) {
-            foreach ($plugins as $plugin) {
-                $paths[] = ROOT . DS . 'plugins' . DS . $plugin . DS . 'src';
-            }
-        }
-
-        $ignorePaths = ['src\/Console', 'src\/Command'];
-        if (!$args->getOption('phpunit')) {
-            $ignorePaths[] = 'tests\/';
-        }
-
-        $ignorePattern = implode('|', $ignorePaths);
-
-        foreach ($paths as $path) {
-            $this->preloader->loadPath($path, function (SplFileInfo $file) use ($ignorePattern) {
-                return !preg_match("/($ignorePattern)/", $file->getPathname());
-            });
+        } catch (PreloadWriteException $e) {
+            $io->err($e->getMessage());
+            return static::CODE_ERROR;
         }
     }
 
