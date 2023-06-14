@@ -77,6 +77,7 @@ jobs:
     strategy:
       matrix:
         version: ['5.x-dev']
+    name: CakePHP Version Compatibility
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -100,6 +101,7 @@ jobs:
 
   integration_test:
     runs-on: ubuntu-latest
+    name: Integration Test (Docker)
     steps:
       - name: Checkout
         uses: actions/checkout@v2
