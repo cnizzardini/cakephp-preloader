@@ -62,7 +62,7 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Test + Coverage + Static Analysis (7.4 only)
+      - name: Test + Coverage
         if: ${{ matrix.php-versions == '7.4' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
