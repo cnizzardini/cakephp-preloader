@@ -5,8 +5,7 @@ namespace CakePreloader;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Filesystem\Filesystem;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Utility\Inflector;
 use CakePreloader\Exception\ResourceNotFoundException;
 use RuntimeException;
@@ -130,7 +129,7 @@ class Preloader
     {
         ob_start();
 
-        $title = sprintf("# Preload Generated at %s \n", FrozenTime::now());
+        $title = sprintf("# Preload Generated at %s \n", DateTime::now());
 
         if ($this->allowCli) {
             $ignores = "['phpdbg']";
