@@ -29,10 +29,10 @@ For an OPCache UI, checkout [amnuts/opcache-gui](https://github.com/amnuts/opcac
 
 The current release is for CakePHP 5 and PHP 8.1, see previous releases for older versions of CakePHP and PHP.
 
-| Version | Branch                                                                 | Cake Version | PHP Version | 
-|---------|------------------------------------------------------------------------|--------------|-------------|
-| 1.*     | [2.next](https://github.com/cnizzardini/cakephp-preloader)             | ^5.0         | ^8.1        |
-| 0.*     | [1.next](https://github.com/cnizzardini/cakephp-preloader/tree/0.next) | ^4.2         | ^7.4        | 
+| Version | Branch                                                         | Cake Version | PHP Version | 
+|---------|----------------------------------------------------------------|--------------|-------------|
+| 1.*     | [main](https://github.com/cnizzardini/cakephp-preloader)       | ^5.0         | ^8.1        |
+| 0.*     | [v0](https://github.com/cnizzardini/cakephp-preloader/tree/v0) | ^4.2         | ^7.4        | 
 
 ## Installation
 
