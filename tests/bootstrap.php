@@ -43,6 +43,7 @@ define('CONFIG', TEST_APP . DS . 'config' . DS);
 // phpcs:enable
 
 require_once CORE_PATH . 'config/bootstrap.php';
+require CAKE . 'functions.php';
 
 date_default_timezone_set('UTC');
 mb_internal_encoding('UTF-8');

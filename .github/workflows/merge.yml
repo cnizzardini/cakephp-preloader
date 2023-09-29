@@ -6,14 +6,12 @@ on:
 
 jobs:
   run:
-
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         operating-system: [ ubuntu-22.04 ]
         php-versions: ['8.1']
-
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
