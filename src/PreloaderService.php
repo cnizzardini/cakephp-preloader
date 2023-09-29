@@ -138,7 +138,7 @@ class PreloaderService
      * @param \Cake\Console\Arguments $args The command arguments.
      * @return void
      */
-    private function plugins(Arguments $args)
+    private function plugins(Arguments $args): void
     {
         $plugins = $args->getOption('plugins') ?? Configure::read('PreloaderConfig.plugins');
         if (empty($plugins)) {

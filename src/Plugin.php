@@ -26,7 +26,7 @@ class Plugin extends BasePlugin
     protected bool $middleware = false;
 
     /**
-     * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
+     * @param \Cake\Core\PluginApplicationInterface<\Cake\Core\Plugin> $app PluginApplicationInterface
      * @return void
      */
     public function bootstrap(PluginApplicationInterface $app): void

@@ -26,14 +26,14 @@ class Preloader
     /**
      * An array of PreloadResource instances
      *
-     * @var \CakePreloader\PreloadResource[]
+     * @var array<\CakePreloader\PreloadResource>
      */
     private array $preloadResources = [];
 
     /**
      * Returns an array of PreloadResource after sorting alphabetically
      *
-     * @return \CakePreloader\PreloadResource[]
+     * @return array<\CakePreloader\PreloadResource>
      */
     public function getPreloadResources(): array
     {
@@ -47,7 +47,7 @@ class Preloader
     /**
      * Sets preloadResources
      *
-     * @param \CakePreloader\PreloadResource[] $preloadResources the array of PreloadResource instances
+     * @param array<\CakePreloader\PreloadResource> $preloadResources the array of PreloadResource instances
      * @return $this
      */
     public function setPreloadResources(array $preloadResources)
@@ -64,7 +64,7 @@ class Preloader
      * @param callable|null $callback An optional callback which receives SplFileInfo as an argument
      * @return $this
      */
-    public function loadPath(string $path, $callback = null)
+    public function loadPath(string $path, ?callable $callback = null)
     {
         $iterator = (new Filesystem())->findRecursive(
             $path,
