@@ -5,14 +5,12 @@ on:
 
 jobs:
   test_and_analyze:
-
+    name: PHP ${{ matrix.php-versions }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
         operating-system: [ ubuntu-22.04 ]
         php-versions: ['8.1', '8.2']
-
-    name: PHP ${{ matrix.php-versions }} Test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -61,6 +59,14 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress --no-suggest
 
+      - name: Code Coverage
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require php-coveralls/php-coveralls
+          export CODECOVERAGE=1 && vendor/bin/phpunit --coverage-clover=clover.xml
+          php-coveralls --coverage_clover=clover.xml -v     
+
   cakephp_version_compatibility:
     name: CakePHP ${{ matrix.cakephp-versions }} Test
     runs-on: ubuntu-latest
@@ -89,8 +95,8 @@ jobs:
           composer test
 
   integration_test:
-    runs-on: ubuntu-latest
     name: Integration Test (Docker)
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
