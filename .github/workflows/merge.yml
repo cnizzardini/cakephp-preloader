@@ -6,7 +6,7 @@ on:
 
 jobs:
   run:
-    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+    name: Report coverage
     runs-on: ubuntu-latest
     strategy:
       matrix:
