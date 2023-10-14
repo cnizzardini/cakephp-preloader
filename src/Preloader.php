@@ -5,8 +5,7 @@ namespace CakePreloader;
 
 use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Filesystem\Filesystem;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 use Cake\Utility\Inflector;
 use CakePreloader\Exception\ResourceNotFoundException;
 use RuntimeException;
@@ -27,14 +26,14 @@ class Preloader
     /**
      * An array of PreloadResource instances
      *
-     * @var \CakePreloader\PreloadResource[]
+     * @var array<\CakePreloader\PreloadResource>
      */
     private array $preloadResources = [];
 
     /**
      * Returns an array of PreloadResource after sorting alphabetically
      *
-     * @return \CakePreloader\PreloadResource[]
+     * @return array<\CakePreloader\PreloadResource>
      */
     public function getPreloadResources(): array
     {
@@ -48,7 +47,7 @@ class Preloader
     /**
      * Sets preloadResources
      *
-     * @param \CakePreloader\PreloadResource[] $preloadResources the array of PreloadResource instances
+     * @param array<\CakePreloader\PreloadResource> $preloadResources the array of PreloadResource instances
      * @return $this
      */
     public function setPreloadResources(array $preloadResources)
@@ -59,13 +58,14 @@ class Preloader
     }
 
     /**
-     * Loads files in the file system $path recursively as PreloadResources after applying the optional callback
+     * Loads files in the file system $path recursively as PreloadResources after applying the optional callback. Note,
+     * loading script files has been disabled by the library in CakePHP 5.
      *
      * @param string $path The file system path
      * @param callable|null $callback An optional callback which receives SplFileInfo as an argument
      * @return $this
      */
-    public function loadPath(string $path, $callback = null)
+    public function loadPath(string $path, ?callable $callback = null)
     {
         $iterator = (new Filesystem())->findRecursive(
             $path,
@@ -83,8 +83,6 @@ class Preloader
             $result = $this->isClass($file);
             if ($result === true) {
                 $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
-            } elseif ($result === false) {
-                $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
             }
         }
 
@@ -130,7 +128,7 @@ class Preloader
     {
         ob_start();
 
-        $title = sprintf("# Preload Generated at %s \n", FrozenTime::now());
+        $title = sprintf("# Preload Generated at %s \n", DateTime::now());
 
         if ($this->allowCli) {
             $ignores = "['phpdbg']";

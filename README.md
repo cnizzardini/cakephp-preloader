@@ -4,8 +4,8 @@
 [![Build](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/merge.yml/badge.svg)](https://github.com/cnizzardini/cakephp-preloader/actions/workflows/merge.yml)
 [![Coverage Status](https://coveralls.io/repos/github/cnizzardini/cakephp-preloader/badge.svg?branch=main)](https://coveralls.io/github/cnizzardini/cakephp-preloader?branch=main)
 [![License: MIT](https://img.shields.io/badge/license-mit-blue)](LICENSE.md)
-[![CakePHP](https://img.shields.io/badge/cakephp-^4.2-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
-[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.4-8892BF.svg?logo=php)](https://php.net/)
+[![CakePHP](https://img.shields.io/badge/cakephp-^5.0-red?logo=cakephp)](https://book.cakephp.org/4/en/index.html)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg?logo=php)](https://php.net/)
 
 An OPCache preloader for CakePHP.
 
@@ -19,13 +19,16 @@ files. Goals:
 composer packages.
 - Provide a simplistic API for writing a custom preloader.
 
-Any files which are not classes (i.e. Interfaces, Traits, Abstract Classes) are not added to the preload file. These 
-will be added automically by PHPs opcache preload if they are required by another class. Function files are loaded using
-`opcache_compile_file` instead of `require_once`.
-
 For an alternative approach, checkout [DarkGhostHunter/Preloader](https://github.com/DarkGhostHunter/Preloader).
 
 For an OPCache UI, checkout [amnuts/opcache-gui](https://github.com/amnuts/opcache-gui).
+
+The current release is for CakePHP 5 and PHP 8.1, see previous releases for older versions of CakePHP and PHP.
+
+| Version | Branch                                                         | Cake Version | PHP Version | 
+|---------|----------------------------------------------------------------|--------------|-------------|
+| 1.*     | [main](https://github.com/cnizzardini/cakephp-preloader)       | ^5.0         | ^8.1        |
+| 0.*     | [v0](https://github.com/cnizzardini/cakephp-preloader/tree/v0) | ^4.2         | ^7.4        | 
 
 ## Installation
 
@@ -71,7 +74,7 @@ Options:
 You may also load configurations from a `config/preloader_config.php` file. Please note, **command line arguments take
 precedence**. See [assets/preloader_config.php](assets/preloader_config.php) for a sample configuration file. If you 
 prefer handling configurations another way read the CakePHP documentation on
-[loading configuration files](https://book.cakephp.org/4/en/development/configuration.html#loading-configuration-files).
+[loading configuration files](https://book.cakephp.org/5/en/development/configuration.html#loading-configuration-files).
 
 ### Examples:
 
@@ -121,12 +124,12 @@ your preloader file is written.
 });
 ```
 
-For more on events, read the CakePHP [Events System](https://book.cakephp.org/4/en/core-libraries/events.html#registering-listeners) documentation.
+For more on events, read the CakePHP [Events System](https://book.cakephp.org/5/en/core-libraries/events.html#registering-listeners) documentation.
 
 ### Preloader Class
 
-You can customize your OPCache Preloader using the same class used by the console command. Preloader uses
-CakePHP's FileSystem class under the hood.
+You can customize your OPCache Preloader using the same class used by the console command. Preloader uses a port of 
+CakePHP 4.x's Filesystem class under the hood.
 
 ```php
 use CakePreloader\Preloader;

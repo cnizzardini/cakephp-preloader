@@ -27,7 +27,6 @@ class PreloaderCommand extends Command
      */
     public function __construct(PreloaderService $preloaderService)
     {
-        parent::__construct();
         $this->preloaderService = $preloaderService;
     }
 

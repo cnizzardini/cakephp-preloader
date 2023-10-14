@@ -1,4 +1,4 @@
-FROM cnizzardini/php-fpm-alpine:8.0-latest
+FROM cnizzardini/php-fpm-alpine:8.1-latest
 
 ARG BRANCH=main
 
@@ -8,7 +8,7 @@ WORKDIR /srv/app
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN composer create-project --prefer-dist --no-interaction cakephp/app:~4.2 .
+RUN composer create-project --prefer-dist --no-interaction cakephp/app:5.0 .
 RUN composer require cnizzardini/cakephp-preloader:$BRANCH
 RUN bin/cake plugin load CakePreloader
 RUN bin/cake preloader

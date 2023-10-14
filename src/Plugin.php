@@ -16,24 +16,22 @@ use CakePreloader\Command\PreloaderCommand;
 class Plugin extends BasePlugin
 {
     /**
-     * Plugin name.
-     *
-     * @var string
+     * @inheritDoc
      */
-    protected $name = 'CakePreloader';
+    protected ?string $name = 'CakePreloader';
 
     /**
-     * @var bool
+     * @inheritDoc
      */
-    protected $routes = false;
+    protected bool $routesEnabled = false;
 
     /**
-     * @var bool
+     * @inheritDoc
      */
-    protected $middleware = false;
+    protected bool $middlewareEnabled = false;
 
     /**
-     * @param \Cake\Core\PluginApplicationInterface $app PluginApplicationInterface
+     * @param \Cake\Core\PluginApplicationInterface<\Cake\Core\Plugin> $app PluginApplicationInterface
      * @return void
      */
     public function bootstrap(PluginApplicationInterface $app): void

@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace CakePreloader\Test\TestCase\Command;
 
+use Cake\Console\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Event\EventList;
 use Cake\Event\EventManager;
-use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use CakePreloader\Exception\PreloadWriteException;
 use CakePreloader\Preloader;
@@ -18,11 +19,10 @@ class PreloaderCommandTest extends TestCase
 {
     use ConsoleIntegrationTestTrait;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
         $this->setAppNamespace('CakePreloader\Test\App');
-        $this->useCommandRunner();
 
         $this->mockService(PreloaderService::class, function () {
             return new PreloaderService(new Preloader());
@@ -32,8 +32,12 @@ class PreloaderCommandTest extends TestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        @unlink(ROOT . DS . 'preload.php');
-        @unlink(ROOT . DS . 'a-unique-name.php');
+        if (file_exists(ROOT . DS . 'preload.php')) {
+            unlink(ROOT . DS . 'preload.php');
+        }
+        if (file_exists(ROOT . DS . 'a-unique-name.php')) {
+            unlink(ROOT . DS . 'a-unique-name.php');
+        }
     }
 
     public function test_default(): void
@@ -51,9 +55,8 @@ class PreloaderCommandTest extends TestCase
         $contains = [
             'vendor/autoload.php',
             'vendor/cakephp/cakephp/src/Cache/Cache.php',
-            'vendor/cakephp/cakephp/src/basics.php',
             'require_once',
-            'opcache_compile_file'
+            //'opcache_compile_file',
         ];
 
         foreach ($contains as $file) {
@@ -153,12 +156,12 @@ class PreloaderCommandTest extends TestCase
     {
         $eventManager = EventManager::instance()->setEventList(new EventList());
 
-        $eventManager->on('CakePreloader.beforeWrite', function(Event $event){
+        $eventManager->on('CakePreloader.beforeWrite', function (Event $event) {
             /** @var Preloader $preloader */
             $preloader = $event->getSubject();
             $this->assertInstanceOf(Preloader::class, $preloader);
             $preloader->setPreloadResources([
-                (new PreloadResource('require_once', __FILE__))
+                (new PreloadResource('require_once', __FILE__)),
             ]);
         });
 
