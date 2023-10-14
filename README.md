@@ -197,5 +197,3 @@ Test Suite + Static Analysis:
 ```console
 composer check
 ```
-
-test.
