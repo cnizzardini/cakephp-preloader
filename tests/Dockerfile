@@ -1,5 +1,8 @@
 FROM cnizzardini/php-fpm-alpine:8.1-latest
 
+RUN apk update && apk upgrade && apk add bash
+SHELL ["/bin/bash", "-c"]
+
 ARG BRANCH=main
 
 COPY php.ini /usr/local/etc/php/php.ini
