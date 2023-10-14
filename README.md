@@ -19,10 +19,6 @@ files. Goals:
 composer packages.
 - Provide a simplistic API for writing a custom preloader.
 
-Any files which are not classes (i.e. Interfaces, Traits, Abstract Classes) are not added to the preload file. These 
-will be added automatically by PHPs opcache preload if they are required by another class. Function files are loaded using
-`opcache_compile_file` instead of `require_once`.
-
 For an alternative approach, checkout [DarkGhostHunter/Preloader](https://github.com/DarkGhostHunter/Preloader).
 
 For an OPCache UI, checkout [amnuts/opcache-gui](https://github.com/amnuts/opcache-gui).
