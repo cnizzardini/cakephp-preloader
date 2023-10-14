@@ -58,7 +58,8 @@ class Preloader
     }
 
     /**
-     * Loads files in the file system $path recursively as PreloadResources after applying the optional callback
+     * Loads files in the file system $path recursively as PreloadResources after applying the optional callback. Note,
+     * loading script files has been disabled by the library in CakePHP 5.
      *
      * @param string $path The file system path
      * @param callable|null $callback An optional callback which receives SplFileInfo as an argument
@@ -82,8 +83,6 @@ class Preloader
             $result = $this->isClass($file);
             if ($result === true) {
                 $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
-            } elseif ($result === false) {
-                $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
             }
         }
 
