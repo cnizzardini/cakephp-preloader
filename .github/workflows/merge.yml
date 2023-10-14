@@ -39,6 +39,6 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           composer check
-          echo ${{ matrix.php-versions }}
-          export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
-          vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+          composer global require php-coveralls/php-coveralls
+          export CODECOVERAGE=1 && vendor/bin/phpunit --coverage-clover=clover.xml
+          php-coveralls --coverage_clover=clover.xml -v
