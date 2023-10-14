@@ -40,12 +40,13 @@ The recommended way to install composer packages is:
 composer require cnizzardini/cakephp-preloader
 ```
 
-Next, load the plugin in your `src/Application.php` `bootstrapCli`
-method:
+Next, load the plugin: 
 
-```php
-$this->addPlugin('CakePreloader');
+```shell
+bin/cake plugin load CakePreloader
 ```
+
+Or via manual steps in the CakePHP [plugin documentation](https://book.cakephp.org/5/en/plugins.html#loading-a-plugin).
 
 ## Usage
 
