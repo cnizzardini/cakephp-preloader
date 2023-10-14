@@ -13,8 +13,9 @@ RUN composer config minimum-stability dev
 RUN composer config prefer-stable true
 RUN composer update
 RUN composer require cnizzardini/cakephp-preloader:$BRANCH
-RUN cat composer.json
 RUN bin/cake version
+RUN bin/cake plugin loaded
+RUN ls vendor/cnizzardini/cakephp-preloader
 RUN bin/cake plugin load CakePreloader
 RUN bin/cake preloader
 
