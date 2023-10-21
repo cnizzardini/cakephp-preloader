@@ -19,7 +19,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, intl, xdebug
+          extensions: mbstring, intl, xdebug, curl
 
       - name: PHP Version
         run: php -v
@@ -30,7 +30,7 @@ jobs:
           composer install --prefer-dist --no-progress
 
       - name: Test Suite + Static Analysis
-        run: composer check
+        run: composer test
 
   coverage:
     name: Code Coverage
