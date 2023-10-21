@@ -25,7 +25,6 @@ jobs:
         run: php -v
 
       - name: Install dependencies
-        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: |
           composer validate
           composer install --prefer-dist --no-progress
