@@ -68,7 +68,7 @@ jobs:
           php-coveralls --coverage_clover=clover.xml -v     
 
   compatibility:
-    name: CakePHP ${{ matrix.cakephp-versions }} Test
+    name: CakePHP ${{ matrix.version }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
