@@ -1,4 +1,4 @@
-FROM cnizzardini/php-fpm-alpine:8.0-latest
+FROM cnizzardini/php-fpm-alpine:8.1-latest
 
 ARG BRANCH=main
 
