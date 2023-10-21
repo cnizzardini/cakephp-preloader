@@ -71,7 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        operating-system: [ ubuntu-20.04 ]
         version: ['~4.2.0', '~4.3.0', '~4.4.0', '^4.5']
     steps:
       - name: Checkout
