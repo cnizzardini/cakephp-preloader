@@ -4,13 +4,15 @@ on:
   pull_request:
 
 jobs:
-  test_and_analyze:
-    name: PHP ${{ matrix.php-versions }} Test
+  run:
+
     runs-on: ubuntu-latest
     strategy:
       matrix:
         operating-system: [ ubuntu-20.04 ]
-        php-versions: ['7.4', '8.0', '8.1', '8.2']
+        php-versions: ['7.4', '8.0', '8.1']
+
+    name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,35 +21,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, intl, curl
-
-      - name: PHP Version
-        run: php -v
-
-      - name: Install dependencies
-        run: |
-          composer validate
-          composer install --prefer-dist --no-progress
-
-      - name: Test Suite + Static Analysis
-        run: composer test
-
-  coverage:
-    name: Code Coverage
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        operating-system: [ ubuntu-20.04 ]
-        php-versions: ['7.4']
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-versions }}
-          extensions: mbstring, intl, xdebug, curl
+          extensions: mbstring, intl, xdebug
 
       - name: PHP Version
         run: php -v
@@ -58,20 +32,27 @@ jobs:
           composer validate
           composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Code Coverage
+      - name: Test (8.0)
+        if: ${{ matrix.php-versions != '7.4' }}
+        run: vendor/bin/phpunit
+
+      - name: Test + Coverage + Static Analysis (7.4 only)
+        if: ${{ matrix.php-versions == '7.4' }}
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          composer global require php-coveralls/php-coveralls
-          export CODECOVERAGE=1 && vendor/bin/phpunit --coverage-clover=clover.xml
-          php-coveralls --coverage_clover=clover.xml -v     
-
+          composer check
+          echo ${{ matrix.php-versions }}
+          export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=clover.xml
+          vendor/bin/php-coveralls --coverage_clover=clover.xml -v
+  #
+  # CakePHP version compatability
+  #
   compatibility:
-    name: CakePHP ${{ matrix.version }} Test
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['~4.2.0', '~4.3.0', '~4.4.0', '^4.5']
+        version: ['~4.2.0', '^4.3']
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -80,7 +61,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
-          extensions: mbstring, intl, curl
+          extensions: mbstring, intl
 
       - name: PHP Version
         run: php -v
@@ -92,9 +73,10 @@ jobs:
           composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress
           composer test
-
-  integration_test:
-    name: Integration Test (Docker)
+  #
+  # Verify we can run php with opcache preload
+  #
+  docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -112,6 +94,6 @@ jobs:
             echo "container is running"
           else
             echo "container is not running"
-            exit 1
+            docker run cakepreloader:test && exit 1
           fi
 
