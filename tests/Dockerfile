@@ -1,6 +1,7 @@
-FROM cnizzardini/php-fpm-alpine:8.0-latest
+FROM cnizzardini/php-fpm-alpine:8.1-latest
 
 ARG BRANCH=main
+ARG CAKE_VERSION=~4.3.0
 
 COPY php.ini /usr/local/etc/php/php.ini
 
@@ -8,8 +9,12 @@ WORKDIR /srv/app
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN composer create-project --prefer-dist --no-interaction cakephp/app:~4.2 .
-RUN composer require cnizzardini/cakephp-preloader:$BRANCH
+RUN composer create-project --prefer-dist --no-interaction cakephp/app:$CAKE_VERSION .
+RUN composer config minimum-stability dev
+RUN composer config prefer-stable true
+RUN composer update -W --no-cache
+RUN composer require cnizzardini/cakephp-preloader:$BRANCH  --no-cache
+RUN composer dump-autoload
 RUN bin/cake plugin load CakePreloader
 RUN bin/cake preloader
 

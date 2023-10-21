@@ -83,8 +83,6 @@ class Preloader
             $result = $this->isClass($file);
             if ($result === true) {
                 $this->preloadResources[] = new PreloadResource('require_once', $file->getPathname());
-            } elseif ($result === false) {
-                $this->preloadResources[] = new PreloadResource('opcache_compile_file', $file->getPathname());
             }
         }
 
@@ -161,7 +159,7 @@ class Preloader
 
         if (!empty($scripts)) {
             echo "# Scripts \n";
-            echo implode('', $scripts ?? []);
+            echo implode('', $scripts);
         }
 
         $content = ob_get_contents();
