@@ -49,5 +49,10 @@
             "name": "Chris Nizzardini",
             "role": "Developer"
         }
-    ]
+    ],
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }
