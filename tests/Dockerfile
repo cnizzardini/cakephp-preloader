@@ -8,7 +8,7 @@ WORKDIR /srv/app
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
-RUN composer create-project --prefer-dist --no-interaction cakephp/app .
+RUN composer create-project --prefer-dist --no-interaction cakephp/app:^4.5 .
 RUN composer config minimum-stability dev
 RUN composer config prefer-stable true
 RUN composer update -W
