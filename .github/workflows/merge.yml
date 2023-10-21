@@ -2,7 +2,7 @@ name: Merge
 
 on:
   push:
-    branches: [ main ]
+    branches: [ v0 ]
 
 jobs:
   run:
