@@ -161,7 +161,7 @@ class Preloader
 
         if (!empty($scripts)) {
             echo "# Scripts \n";
-            echo implode('', $scripts ?? []);
+            echo implode('', $scripts);
         }
 
         $content = ob_get_contents();
