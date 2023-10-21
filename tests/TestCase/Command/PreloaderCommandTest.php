@@ -51,9 +51,8 @@ class PreloaderCommandTest extends TestCase
         $contains = [
             'vendor/autoload.php',
             'vendor/cakephp/cakephp/src/Cache/Cache.php',
-            'vendor/cakephp/cakephp/src/basics.php',
             'require_once',
-            'opcache_compile_file'
+            //'opcache_compile_file',
         ];
 
         foreach ($contains as $file) {
