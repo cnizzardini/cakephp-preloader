@@ -73,6 +73,9 @@ class PreloaderCommand extends Command
             ->addOption('name', [
                 'help' => 'The preload file path (default: ROOT . DS . preload.php)',
             ])
+            ->addOption('basePath', [
+                'help' => 'Path to scan for classes, packages, and plugins (default: ROOT)',
+            ])
             ->addOption('app', [
                 'help' => 'Add your applications src directory into the preloader',
                 'boolean' => true,
