@@ -224,4 +224,40 @@ class PreloaderCommandTest extends TestCase
         $this->exec('preloader --phpunit');
         $this->assertExitError();
     }
+
+    public function test_with_base_path(): void
+    {
+        $basePath = '/custom/base/path';
+        $this->exec('preloader --basePath="' . $basePath . '"');
+        $this->assertExitSuccess();
+        $this->assertFileExists($basePath . DS . 'preload.php');
+
+        /** @var string $preload */
+        $preload = file_get_contents($basePath . DS . 'preload.php');
+        $this->assertTrue(is_string($preload));
+
+        $this->assertStringContainsString("if (in_array(PHP_SAPI, ['cli', 'phpdbg'], true))", $preload);
+
+        $contains = [
+            'vendor/autoload.php',
+            'vendor/cakephp/cakephp/src/Cache/Cache.php',
+            'require_once',
+            //'opcache_compile_file',
+        ];
+
+        foreach ($contains as $file) {
+            $this->assertStringContainsString($file, $preload);
+        }
+
+        $excludes = [
+            'vendor/cakephp/cakephp/src/Database/Exception.php',
+            'vendor/cakephp/cakephp/src/Database/Expression/Comparison.php',
+            'vendor/cakephp/cakephp/src/Http/ControllerFactory.php',
+            'vendor/cakephp/cakephp/src/Routing/Exception/MissingControllerException.php',
+        ];
+
+        foreach ($excludes as $file) {
+            $this->assertStringNotContainsString($file, $preload);
+        }
+    }
 }
