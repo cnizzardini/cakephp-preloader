@@ -31,10 +31,10 @@ class PreloaderService
      */
     public function generate(Arguments $args, ConsoleIo $io): string
     {
-        $this->cakephp();
+        $this->cakephp($args, $io);
         $this->packages($args, $io);
-        $this->app($args);
-        $this->plugins($args);
+        $this->app($args, $io);
+        $this->plugins($args, $io);
 
         $path = $args->getOption('name') ?? Configure::read('PreloaderConfig.name');
         $path = !empty($path) ? $path : ROOT . DS . 'preload.php';
@@ -51,13 +51,21 @@ class PreloaderService
     /**
      * Loads the CakePHP framework
      *
+     * @param \Cake\Console\Arguments $args CLI Arguments
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return void
      */
-    private function cakephp(): void
+    private function cakephp(Arguments $args, ConsoleIo $io): void
     {
+        $preloadPath = CAKE;
+        if ($preloadPath = $args->getOption('basePath')) {
+            $io->out('<info>Using custom base path for Cake: ' . $basePath . '</info>');
+            $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
+        }
+
         $ignorePaths = implode('|', ['src\/Console', 'src\/Command', 'src\/Shell', 'src\/TestSuite']);
 
-        $this->preloader->loadPath(CAKE, function (SplFileInfo $file) use ($ignorePaths) {
+        $this->preloader->loadPath($preloadPath, function (SplFileInfo $file) use ($ignorePaths) {
             return !preg_match("/($ignorePaths)/", $file->getPathname());
         });
     }
@@ -74,6 +82,12 @@ class PreloaderService
         $packages = $args->getOption('packages') ?? Configure::read('PreloaderConfig.packages');
         if (empty($packages)) {
             return;
+        }       
+
+        $preloadPath = ROOT;
+        if ($preloadPath = $args->getOption('basePath')) {
+            $io->out('<info>Using custom base path for Packages: ' . $basePath . '</info>');
+            $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
 
         if (is_string($packages)) {
@@ -81,8 +95,8 @@ class PreloaderService
         }
 
         $packages = array_map(
-            function ($package) {
-                return ROOT . DS . 'vendor' . DS . $package;
+            function ($package) use ($basePath) {
+                return $preloadPath . DS . 'vendor' . DS . $package;
             },
             $packages
         );
@@ -112,12 +126,19 @@ class PreloaderService
      * Adds the users APP into the preloader
      *
      * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return void
      */
-    private function app(Arguments $args): void
+    private function app(Arguments $args, ConsoleIo $io): void
     {
         if (($args->hasOption('app') && !$args->getOption('app')) && !Configure::read('PreloaderConfig.app')) {
             return;
+        }
+
+        $preloadPath = APP;
+        if ($preloadPath = $args->getOption('basePath')) {
+            $io->out('<info>Using custom base path for App: ' . $basePath . '</info>');
+            $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
 
         $ignorePaths = ['src\/Console', 'src\/Command'];
@@ -127,7 +148,7 @@ class PreloaderService
 
         $ignorePattern = implode('|', $ignorePaths);
 
-        $this->preloader->loadPath(APP, function (SplFileInfo $file) use ($ignorePattern) {
+        $this->preloader->loadPath($basePath, function (SplFileInfo $file) use ($ignorePattern) {
             return !preg_match("/($ignorePattern)/", $file->getPathname());
         });
     }
@@ -136,25 +157,32 @@ class PreloaderService
      * Adds the users plugins into the preloader
      *
      * @param \Cake\Console\Arguments $args The command arguments.
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @return void
      */
-    private function plugins(Arguments $args): void
+    private function plugins(Arguments $args, ConsoleIo $io): void
     {
         $plugins = $args->getOption('plugins') ?? Configure::read('PreloaderConfig.plugins');
         if (empty($plugins)) {
             return;
+        }       
+
+        $preloadPath = ROOT;
+        if ($preloadPath = $args->getOption('basePath')) {
+            $io->out('<info>Using custom base path for Plugins: ' . $basePath . '</info>');
+            $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
 
         $paths = [];
         if ($plugins === '*' || $plugins === true) {
-            $paths[] = ROOT . DS . 'plugins';
+            $paths[] = $basePath . DS . 'plugins';
         } elseif (is_string($plugins)) {
             $plugins = explode(',', (string)$args->getOption('plugins'));
         }
 
         if (is_array($plugins)) {
             foreach ($plugins as $plugin) {
-                $paths[] = ROOT . DS . 'plugins' . DS . $plugin . DS . 'src';
+                $paths[] = $basePath . DS . 'plugins' . DS . $plugin . DS . 'src';
             }
         }
 
