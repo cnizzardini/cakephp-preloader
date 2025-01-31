@@ -58,7 +58,7 @@ class PreloaderService
     private function cakephp(Arguments $args, ConsoleIo $io): void
     {
         $preloadPath = CAKE;
-        if ($preloadPath = $args->getOption('basePath')) {
+        if ($basePath = $args->getOption('basePath')) {
             $io->out('<info>Using custom base path for Cake: ' . $basePath . '</info>');
             $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
@@ -85,7 +85,7 @@ class PreloaderService
         }       
 
         $preloadPath = ROOT;
-        if ($preloadPath = $args->getOption('basePath')) {
+        if ($basePath = $args->getOption('basePath')) {
             $io->out('<info>Using custom base path for Packages: ' . $basePath . '</info>');
             $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
@@ -136,7 +136,7 @@ class PreloaderService
         }
 
         $preloadPath = APP;
-        if ($preloadPath = $args->getOption('basePath')) {
+        if ($basePath = $args->getOption('basePath')) {
             $io->out('<info>Using custom base path for App: ' . $basePath . '</info>');
             $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
@@ -168,7 +168,7 @@ class PreloaderService
         }       
 
         $preloadPath = ROOT;
-        if ($preloadPath = $args->getOption('basePath')) {
+        if ($basePath = $args->getOption('basePath')) {
             $io->out('<info>Using custom base path for Plugins: ' . $basePath . '</info>');
             $preloadPath = str_replace(ROOT, $basePath, $preloadPath);
         }
