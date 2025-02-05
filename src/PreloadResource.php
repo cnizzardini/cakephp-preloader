@@ -77,9 +77,11 @@ class PreloadResource
      * @param string $file The new file path
      * @return void
      */
-    public function setPath(string $file): void
+    public function setPath(string $file): self
     {
         $this->file = $file;
+
+        return $this;
     }
 
     /**
