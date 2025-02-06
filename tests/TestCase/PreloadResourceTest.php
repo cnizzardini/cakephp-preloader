@@ -19,4 +19,11 @@ class PreloadResourceTest extends TestCase
         $this->expectException(ResourceNotFoundException::class);
         (new PreloadResource('require_once', '/tmp/test.txt'))->getResource();
     }
+
+    public function test_setPath()
+    {
+        $resource = new PreloadResource('require_once', '/tmp/test.txt');
+        $resource->setPath('/tmp/new_test.txt');
+        $this->assertEquals('/tmp/new_test.txt', $resource->getFile());
+    }
 }
