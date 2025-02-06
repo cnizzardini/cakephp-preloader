@@ -72,6 +72,19 @@ class PreloadResource
     }
 
     /**
+     * Sets the file path
+     *
+     * @param string $file The new file path
+     * @return self
+     */
+    public function setPath(string $file): self
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
      * Returns the resource to be preloaded as either a require_once or opcache_compile_file string
      *
      * @return string
