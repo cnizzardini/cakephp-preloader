@@ -75,7 +75,7 @@ class PreloadResource
      * Sets the file path
      *
      * @param string $file The new file path
-     * @return void
+     * @return self
      */
     public function setPath(string $file): self
     {
