@@ -43,7 +43,7 @@ composer require cnizzardini/cakephp-preloader
 Next, load the plugin: 
 
 ```shell
-bin/cake plugin load CakePreloader
+bin/cake plugin load CakePreloader --only-cli
 ```
 
 Or via manual steps in the CakePHP [plugin documentation](https://book.cakephp.org/5/en/plugins.html#loading-a-plugin).
