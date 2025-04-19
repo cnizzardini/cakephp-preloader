@@ -47,7 +47,7 @@ class PreloadResource
     {
         if (!in_array($type, self::TYPES)) {
             throw new InvalidArgumentException(
-                'Argument must be on of ' . implode(', ', self::TYPES)
+                'Argument must be on of ' . implode(', ', self::TYPES),
             );
         }
 
@@ -94,7 +94,7 @@ class PreloadResource
     {
         if (!file_exists($this->file)) {
             throw new ResourceNotFoundException(
-                'File `' . $this->file . '` does not exist'
+                'File `' . $this->file . '` does not exist',
             );
         }
 

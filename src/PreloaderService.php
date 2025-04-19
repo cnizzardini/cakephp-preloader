@@ -84,7 +84,7 @@ class PreloaderService
             function ($package) {
                 return ROOT . DS . 'vendor' . DS . $package;
             },
-            $packages
+            $packages,
         );
 
         $validPackages = array_filter($packages, function ($package) {

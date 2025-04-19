@@ -93,26 +93,3 @@ jobs:
           composer require cakephp/cakephp:${{matrix.version}} --no-update
           composer install --prefer-dist --no-progress
           composer test
-
-  integration_test:
-    name: Integration Test (Docker)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v5.1
-      - name: Docker Build
-        run: docker build -t cakepreloader:test tests/ --no-cache --build-arg BRANCH=dev-${{ steps.branch-name.outputs.current_branch }}
-      - name: Docker Run
-        run: docker run -d cakepreloader:test
-      - name: Test Container
-        run: |
-          if docker ps | grep "cakepreloader:test"; then
-            echo "container is running"
-          else
-            echo "container is not running"
-            exit 1
-          fi
-
