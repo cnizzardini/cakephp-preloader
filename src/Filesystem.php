@@ -88,12 +88,12 @@ final class Filesystem
                 }
 
                 return true;
-            }
+            },
         );
 
         $flatten = new RecursiveIteratorIterator(
             $dirFilter,
-            RecursiveIteratorIterator::CHILD_FIRST
+            RecursiveIteratorIterator::CHILD_FIRST,
         );
 
         if ($filter === null) {

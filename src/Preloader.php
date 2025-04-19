@@ -75,7 +75,7 @@ class Preloader
                 }
 
                 return is_callable($callback) ? $callback($file) : true;
-            }
+            },
         );
 
         /** @var \SplFileInfo $file */
