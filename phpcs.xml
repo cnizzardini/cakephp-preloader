@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <ruleset name="App">
-    <config name="installed_paths" value="vendor/cakephp/cakephp-codesniffer"/>
-
+    <config name="installed_paths" value="vendor/cakephp/cakephp-codesniffer,vendor/slevomat/coding-standard"/>
     <rule ref="CakePHP"/>
 </ruleset>
