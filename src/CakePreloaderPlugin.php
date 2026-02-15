@@ -13,7 +13,7 @@ use CakePreloader\Command\PreloaderCommand;
 /**
  * Plugin for Preloader
  */
-class Plugin extends BasePlugin
+class CakePreloaderPlugin extends BasePlugin
 {
     /**
      * @inheritDoc
