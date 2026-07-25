@@ -8,3 +8,8 @@ parameters:
         - src/Console/Installer.php
     bootstrapFiles:
        - tests/bootstrap.php
+    ignoreErrors:
+        -
+            message: '#has parameter \$app with generic interface Cake\\Core\\PluginApplicationInterface but does not specify its types#'
+            path: src/CakePreloaderPlugin.php
+    reportUnmatchedIgnoredErrors: false

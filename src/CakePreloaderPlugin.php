@@ -31,8 +31,7 @@ class CakePreloaderPlugin extends BasePlugin
     protected bool $middlewareEnabled = false;
 
     /**
-     * @param \Cake\Core\PluginApplicationInterface<\Cake\Core\Plugin> $app PluginApplicationInterface
-     * @return void
+     * @inheritDoc
      */
     public function bootstrap(PluginApplicationInterface $app): void
     {
